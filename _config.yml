@@ -3,8 +3,7 @@ title: ColaDrill's Blog
 SEOTitle: 蔡嘉跃的博客 | ColaDrill's Blog
 header-img: img/post-bg-desk.jpg
 email: caijiayue@outlook.com
-email: caijiayue2@gmail.com
-description: "Every failure is leading towards success."
+description: "Know more, Do more, Be more."
 keyword: "ColaDrill, ColaDrill's Blog, 蔡嘉跃的博客, Jiayue Cai, 蔡嘉跃"
 url: "http://coladrill.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
@@ -12,8 +11,8 @@ github_repo: "https://github.com/ColaDrill/ColaDrill.github.io.git" # you code r
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Goals determine what you going to be!"
-sidebar-avatar: /img/about-BY-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-about-description: "Know more, Do more, Be more."
+sidebar-avatar: /img/about-me.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
