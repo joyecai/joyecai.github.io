@@ -1,9 +1,8 @@
 # Site settings
 title: Jiayue Cai's Blog
-SEOTitle: 蔡嘉跃的博客 | Jiayue Cai's Blog
+SEOTitle: Jiayue Cai's Blog
 header-img: img/post-bg-desk.jpg
-email: caijiayue@outlook.com
-email: caijiayue2@gmail.com
+email: caijiayue@outlook.com, caijiayue2@gmail.com
 description: "Know more, Do more, Be more."
 keyword: "Jiayue Cai, Jiayue Cai's Blog, 蔡嘉跃, 蔡嘉跃的博客"
 url: "http://coladrill.github.io"          # your host, for absolute URL
@@ -12,7 +11,7 @@ github_repo: "https://github.com/ColaDrill/coladrill.github.io.git" # you code r
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Know more, Do more, Be more."
+sidebar-about-description: "Jiayue Cai"
 sidebar-avatar: /img/about-me.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
