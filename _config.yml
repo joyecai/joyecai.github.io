@@ -7,7 +7,7 @@ description: "Know more, Do more, Be more."
 keyword: "Jiayue Cai, Jiayue Cai's Blog, 蔡嘉跃的博客, Jiayue Cai, 蔡嘉跃"
 url: "http://coladrill.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/ColaDrill/ColaDrill.github.io.git" # you code repository
+github_repo: "https://github.com/ColaDrill/coladrill.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
@@ -57,7 +57,7 @@ kramdown:
 
 # 评论系统
  Disqus（https://disqus.com/）
- disqus_username: Coladrill
+ disqus_username: ColaDrill
 
 # Gitalk
 gitalk:
