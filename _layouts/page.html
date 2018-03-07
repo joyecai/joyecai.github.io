@@ -125,8 +125,7 @@ layout: default
                             <!-- add jianshu add target = "_blank" to <a> by BY -->
                             {% if site.jianshu_username %}
                             <li>
-							    {% String jianshu1 = site.jianshu_username.replace("%20", " ") %}
-                                <a target="_blank" href="https://www.jianshu.com/u/{{ jianshu1 }}">
+                                <a target="_blank" href="https://www.jianshu.com/u/{{ site.jianshu_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa  fa-stack-1x fa-inverse">简</i>
@@ -136,8 +135,7 @@ layout: default
                             {% endif %}
                             {% if site.twitter_username %}
                             <li>
-							    {% String twitter1 = site.twitter_username.replace("%20", " ") %}
-                                <a href="https://twitter.com/{{ twitter1 }}">
+                                <a href="https://twitter.com/{{ site.twitter_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
@@ -147,8 +145,7 @@ layout: default
                             {% endif %}
                             {% if site.zhihu_username %}
                             <li>
-							    {% String zhihu1 = site.zhihu_username.replace("%20", " ") %}
-                                <a target="_blank" href="https://www.zhihu.com/people/{{ zhihu1 }}">
+                                <a target="_blank" href="https://www.zhihu.com/people/{{ site.zhihu_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa  fa-stack-1x fa-inverse">知</i>
@@ -158,8 +155,7 @@ layout: default
                             {% endif %}
                             {% if site.weibo_username %}
                             <li>
-							    {% String weibo1 = site.weibo_username.replace("%20", " ") %}
-                                <a target="_blank" href="http://weibo.com/{{ weibo1 }}">
+                                <a target="_blank" href="http://weibo.com/{{ site.weibo_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
@@ -169,8 +165,7 @@ layout: default
                             {% endif %}
                             {% if site.facebook_username %}
                             <li>
-							    {% String facebook1 = site.facebook_username.replace("%20", " ") %}
-                                <a target="_blank" href="https://www.facebook.com/{{ facebook1 }}">
+                                <a target="_blank" href="https://www.facebook.com/{{ site.facebook_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
@@ -180,8 +175,7 @@ layout: default
                             {% endif %}
                             {% if site.github_username %}
                             <li>
-							    {% String github1 = site.github_username.replace("%20", " ") %}
-                                <a target="_blank" href="https://github.com/{{ github1 }}">
+                                <a target="_blank" href="https://github.com/{{ site.github_username }}">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
                                         <i class="fa fa-github fa-stack-1x fa-inverse"></i>
