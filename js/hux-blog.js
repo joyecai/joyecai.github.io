@@ -10,7 +10,7 @@
  * Licensed under Apache 2.0 
  */
 
-// Tooltip Init
+// Tooltip Init 
 // Unuse by Hux since V1.6: Titles now display by default so there is no need for tooltip
 // $(function() {
 //     $("[data-toggle='tooltip']").tooltip();

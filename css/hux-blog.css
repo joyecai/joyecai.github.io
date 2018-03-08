@@ -5,7 +5,7 @@
   }
 }
 @media (min-width: 768px) {
-  .post-container {
+  .post-container { 
     padding-right: 5%;
   }
 }
