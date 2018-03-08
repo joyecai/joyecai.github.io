@@ -2,7 +2,7 @@
 layout:     post
 title:      Jiayue Cai's English Page
 subtitle:   Myself
-date:       2015-01-01
+date:       
 author:     Jiayue Cai
 header-img: img/post-bg-debug.png
 catalog: true
