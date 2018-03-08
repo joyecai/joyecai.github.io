@@ -99,7 +99,7 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "英文主页",
+        title: "English Page",
         href: "http://coladrill.github.io/2018/03/08/EnglishPage/"
     }
 ]
