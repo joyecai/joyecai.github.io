@@ -78,7 +78,7 @@ ba_track_id: 0f924a6af787246144d38c1cdb35895c
 
 # Google Analytics
 ga_track_id: 'UA-115293961-1'            # Format: UA-xxxxxx-xx
-ga_domain: coladrill.github.io           # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+ga_domain: coladrill.top               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
 
