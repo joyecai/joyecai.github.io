@@ -100,6 +100,6 @@ service-worker: true
 friends: [
     {
         title: "English Page",
-        href: "https://coladrill.github.io/ColaDrill/"
+        href: "https://coladrill.github.io/ColaDrill"
     }
 ]
