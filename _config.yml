@@ -102,4 +102,8 @@ friends: [
         title: "English Page",
         href: "https://coladrill.github.io/ColaDrill"
     }
+    {
+        title: "Google Analytics",
+        href: "https://analytics.google.com/analytics"
+    }
 ]
