@@ -10,53 +10,32 @@ header-img: "img/post-bg-rwd.jpg"
     <option value="0" selected> 中文 Chinese </option>
     <option value="1"> 英文 English </option>
 </select> -->
-
+	<link type="text/css" rel="stylesheet" href="default.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jscex.min.js"></script>
+	<script type="text/javascript" src="js/jscex-parser.js"></script>
+	<script type="text/javascript" src="js/jscex-jit.js"></script>
+	<script type="text/javascript" src="js/jscex-builderbase.min.js"></script>
+	<script type="text/javascript" src="js/jscex-async.min.js"></script>
+	<script type="text/javascript" src="js/jscex-async-powerpack.min.js"></script>
+	<script type="text/javascript" src="js/functions.js" charset="utf-8"></script>
+	
 <!-- Chinese Version -->
 <div class="zh post-container">
 
     <!--copied from markdown -->
     <blockquote><p>才能 视野 胸怀<br>
     Up Up Up!</p></blockquote>
-
-    <p>Hi，我是<strong>蔡嘉跃</strong>，现东南大学计算机硕士生在读</p>
-
-	<p>热爱算法研究、建模、科研、软件项目开发以及各种文娱活动</p>
 	
-    <p>学习、工作之余，我还是一个乒乓球爱好者</p>
-
-    <p>英文版自我介绍见 <a href="https://coladrill.github.io/ColaDrill">English Homepage</a> ,详细简历见 <a href="https://www.linkedin.com/in/jiayuecai/">LinkedIn</a> </p>
-
-    <p>如果有什么问题，欢迎提出探讨~</p>
+    <div id="code">
+		<span class="say"> Hi，我是<strong>蔡嘉跃</strong>，现东南大学计算机硕士生在读</span><br/>
+		<span class="say"> 热爱算法研究、建模、科研、软件项目开发以及各种文娱活动</span><br>
+	    <span class="say"> 学习、工作之余，我还是一个乒乓球爱好者</span><br/>
+        <span class="say"> 英文版自我介绍见 <a href="https://coladrill.github.io/ColaDrill">English Homepage</a> ,详细简历见 <a href="https://www.linkedin.com/in/jiayuecai/">LinkedIn</a></span><br/>
+        <span class="say"> 如果有什么问题，欢迎提出探讨~</span><br/>
+	</div>
 	
-	<p></p>
-    
-    <h5>Talks</h5>
-
-    <ul>
-        <li><a href="https://analytics.google.com/analytics">Google Analytics</a></li>
-    </ul>
 </div>
-
-<!-- English Version -->
-<!-- <div class="en post-container">
-    <blockquote><p>Yet another iOS Developer. <br>
-    Yet another Life-long Student.</p></blockquote>
-
-    <p>Hi, I am <strong>Baiying Qiu</strong>，you can call me <strong>BY</strong>. I am an iOS software engineer and currently working in Xiamen</p>
-
-    <p>This is my personal blog, through making Github Pages and Jekyll.My GitHub  👉 <a href="http://github.com/qiubaiying">Github·BY</a>.</p>
-    
-    <p>I am a sports enthusiast, I like fitness, running and boxing.</p>
-
-    <h5>Talks</h5>
-
-    <ul>
-    <li><a href="https://github.com">GitHub</a></li>
-    <li><a href="http://jekyll.com.cn/">jekyll</a></li>
-    <li><a href="https://pages.github.com/">GitHub Pages</a></li>
-    <li><a href="https://qiubaiying.github.io">BY</a></li>
-    </ul>
-</div> -->
 
 <!-- Handle Language Change -->
 <script type="text/javascript">
@@ -98,32 +77,6 @@ header-img: "img/post-bg-rwd.jpg"
     _render();
 </script>
 
-
-<!-- Gitalk 评论 start  -->
-{% if site.gitalk.enable %}
-<!-- Gitalk link  -->
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
-
-<div id="gitalk-container"></div>
-    <script type="text/javascript">
-    var gitalk = new Gitalk({
-    clientID: '{{site.gitalk.clientID}}',
-    clientSecret: '{{site.gitalk.clientSecret}}',
-    repo: '{{site.gitalk.repo}}',
-    owner: '{{site.gitalk.owner}}',
-    admin: ['{{site.gitalk.admin}}'],
-    distractionFreeMode: {{site.gitalk.distractionFreeMode}},
-    id: 'about',
-    });
-    gitalk.render('gitalk-container');
-</script>
-{% endif %}
-<!-- Gitalk end -->
-
- <!-- disqus 评论框 start  -->
-{% if site.disqus.enable %}
-
 <div class="comment">
     <div id="disqus_thread" class="disqus-thread">
     </div>
@@ -141,7 +94,26 @@ header-img: "img/post-bg-rwd.jpg"
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		
+		var textAnimate = eval(Jscex.compile("async", function () {
+		
+		    $("#code").show().typewriter();
+            $("#clock-box").fadeIn(300);
+            while (true) {
+                timeElapse(together);
+                $await(Jscex.Async.sleep(500));
+            }
+        }));
+
+        var runAsync = eval(Jscex.compile("async", function () {
+            textAnimate().start();
+            $await(jumpAnimate());
+        }));
+
+        runAsync().start();
+		
     })();
+
 </script>
 <!-- disqus 公共JS代码 end -->
 {% endif %}
