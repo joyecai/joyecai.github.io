@@ -94,24 +94,6 @@ header-img: "img/post-bg-rwd.jpg"
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-		
-		var textAnimate = eval(Jscex.compile("async", function () {
-		
-		    $("#code").show().typewriter();
-            $("#clock-box").fadeIn(300);
-            while (true) {
-                timeElapse(together);
-                $await(Jscex.Async.sleep(500));
-            }
-        }));
-
-        var runAsync = eval(Jscex.compile("async", function () {
-            textAnimate().start();
-            $await(jumpAnimate());
-        }));
-
-        runAsync().start();
-		
     })();
 
 </script>
