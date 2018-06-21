@@ -2,7 +2,7 @@
 layout:     post
 title:      Jiayue Cai's English Page
 subtitle:   Myself
-date:       
+date:       2015-01-01
 author:     Jiayue Cai
 header-img: img/post-bg-debug.png
 catalog: true
@@ -13,11 +13,6 @@ tags:
 
 
 >Welcome to you! 
-
-
-## LinkedIn
-
-- [LinkedIn Page](https://www.linkedin.com/in/jiayuecai/)
 
 ## Bachelor
 
@@ -41,6 +36,6 @@ tags:
 - caijiayue@outlook.com
 - caijiayue2@gmail.com
 
-## Blog
+## LinkedIn
 
-- [My Blog](https://coladrill.github.io/)
+- https://www.linkedin.com/in/jiayuecai/
