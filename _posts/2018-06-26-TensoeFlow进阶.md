@@ -32,3 +32,21 @@ tags:
 
 	# 输出:
 	# [array([ 14.], dtype=float32)]
+
+	
+### 命令行参数（Flag）
+
+	#详见https://blog.csdn.net/u012436149/article/details/52870069和https://blog.csdn.net/lyc_yongcai/article/details/73456960
+	
+	#定义参数
+	flags = tf.flags
+	flags.DEFINE_string("para_name_1","default_val", "description")
+	flags.DEFINE_bool("para_name_2","default_val", "description")
+	
+	#session主体
+	def main(_): 
+		...
+	
+    #命令行调用
+	python script.py --para_name_1=name --para_name_2=name2
+	
