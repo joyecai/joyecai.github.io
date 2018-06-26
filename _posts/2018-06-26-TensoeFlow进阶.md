@@ -18,7 +18,7 @@ tags:
 
 	import tensorflow as tf
 
-### 常量&变量 
+### Feed机制（命令行输入参数） 
 
 	#之前的例子中展示了在计算图中引入tensor，以常量和变量的形式存储。
 	#TensorFlow还提供了feed机制，该机制可以临时替换图中的tensor。
