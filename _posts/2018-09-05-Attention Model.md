@@ -62,7 +62,7 @@ Attention机制最早是在视觉图像领域提出来的(上世纪90年代)，�
 - Local attention：局部注意力有两种，第一种首先通过一个hard-globle-attention锁定位置，在位置上下某个local窗口进行注意力加权
 
 3、按score函数
-- 点		积：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub>
+- 点		积：Similarity(Query,Key<sub>i</sub>) = &#124;&#124;Query*Key<sub>i</sub>&#124;&#124;
 - Cosine相似性：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub>} / II Query II * II Key<sub>i</sub> II
 - M L P 网	络：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub> MLP(Query,Key<sub>i</sub>)
 
