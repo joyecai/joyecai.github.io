@@ -63,7 +63,7 @@ Attention机制最早是在视觉图像领域提出来的(上世纪90年代)，�
 
 3、按score函数
 - 点		积：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub>
-- Cosine相似性：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub>} / &#124;&#124;Query&#124;&#124;*&#124;&#124;Key<sub>i</sub>&#124;&#124;
+- Cosine相似性：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub> / &#124;&#124;Query&#124;&#124; * &#124;&#124;Key<sub>i</sub>&#124;&#124;
 - M L P 网	络：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub> MLP(Query,Key<sub>i</sub>)
 
 
