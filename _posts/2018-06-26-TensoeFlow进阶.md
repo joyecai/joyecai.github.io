@@ -36,21 +36,21 @@ sess = tf.InteractiveSession()
 
 #创建权重和偏置,初始化时应加入轻微噪声，来打破对称性，防止零梯度的问题
 def weight_variable(shape):
-    initial = tf.truncated_normal(shape, stddev=0.1)
-    return tf.Variable(initial)
+	initial = tf.truncated_normal(shape, stddev=0.1)
+	return tf.Variable(initial)
  
 def bias_variable(shape):
-    initial = tf.constant(0.1, shape=shape)
-    return tf.Variable(initial)
+	initial = tf.constant(0.1, shape=shape)
+	return tf.Variable(initial)
  
 #卷积使用1 步长（stride size），0 边距（padding size）的模板，保证输出和输入是同一个大小。
 #滤波器filter（带着一组固定权重的神经元）对局部输入数据进行卷积计算。每计算完一个数据窗口内的局部数据后，数据窗口不断平移滑动，直到计算完所有数据。
 def conv2d(x, W):
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
  
 #池化用简单传统的2X2 大小的模板做max pooling
 def max_pool_2x2(x):
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2,1], padding='SAME')
+	return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2,1], padding='SAME')
  
 ```
 
@@ -111,17 +111,16 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction , "float"))
 sess.run(tf.initialize_all_variables())
  
  
-        
+
 for i in range(20000):
-    batch = mnist.train.next_batch(50)
-    if i%100 == 0:
-        train_accuracy = accuracy.eval(feed_dict={x:batch[0], y_: batch[1], keep_prob: 1.0})
-        print( "step%d,training accuracy%g"%(i, train_accuracy))
-    train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob:0.5})
-    
+	batch = mnist.train.next_batch(50)
+	if i%100 == 0:
+		train_accuracy = accuracy.eval(feed_dict={x:batch[0],y_: batch[1], keep_prob: 1.0})
+		print( "step%d,training accuracy%g"%(i, train_accuracy))
+	train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob:0.5})
+	
 print( "test accuracy %g"%accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
- 
- 
+
 #使用CNN在mnist数据集上有99%的分类正确率
 ```
 
