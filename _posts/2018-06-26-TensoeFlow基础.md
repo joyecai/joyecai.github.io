@@ -12,14 +12,17 @@ tags:
 ---
 
 
->持续更新中... 
+>Last updated on 2018-9-29...  
 
 ### 引入头文件 
 
+```python
 	import tensorflow as tf
+```
 
 ### 常量&变量 
 
+```python
 	# 定义常量 a
     a = tf.constant(1)
 	
@@ -32,10 +35,10 @@ tags:
 	
 	# 更新赋值
 	update = tf.assign(b, sum)
-
-	
+```	
 ### 初始化所有变量并且运行（激活）
 
+```python
 	# 如果定义了变量，就一定要初始化它们
 	init = tf.global_variables_initializer() 
 	
@@ -45,10 +48,11 @@ tags:
 		for _ in range(3):
 			sess.run(update)       #运行update步骤
 			print(sess.run(sum))   #运行sum步骤
-	
-	
+```
+
 ### 矩阵
-	
+
+```python
 	#定义矩阵
 	matrix1 = tf.constant([ [3., 3.] ])   #1x2的矩阵
 	matrix2 = tf.constant([ [2.],         #2x1的矩阵
@@ -56,9 +60,11 @@ tags:
 	
 	#矩阵乘法
 	product = tf.matmul(matrix1, matrix2)
-	
+```	
+
 ### 运行（即启动图）
 
+```python
 	#方法1
     sess = tf.Session()
 	result = sess.run(product)
@@ -69,9 +75,11 @@ tags:
 	with tf.Session() as sess：
 		result = sess.run([product])
 		print result
+```
 
 ### 指派GPU运行
-    
+
+```python
 	#通常情况下，你不需要显示指使用CPU或者GPU。TensorFlow能自动检测，如果检测到GPU，TensorFlow会使用第一个GPU来执行操作。
 	#如果机器上有多个GPU，除第一个GPU外的其他GPU是不参与计算的，为了使用这些GPU，你必须将op明确指派给他们执行。
 	#with…Device语句用来指派特定的CPU或GPU执行操作：
@@ -82,3 +90,44 @@ tags:
 			matrix2 = tf.constant([[2.],[2.]])
 			product = tf.matmul(matrix1, matrix2)
 			...
+```	
+
+### Feed机制（命令行输入参数） 
+
+```python
+	#之前的例子中展示了在计算图中引入tensor，以常量和变量的形式存储。
+	#TensorFlow还提供了feed机制，该机制可以临时替换图中的tensor。
+	
+	input1 = tf.placeholder(tf.float32)
+	input2 = tf.placeholder(tf.float32)
+	output = tf.mul(input1, input2)
+
+	with tf.Session() as sess:
+	print sess.run([output], feed_dict={input1:[7.], input2:[2.]})
+
+	# 输出:
+	# [array([ 14.], dtype=float32)]
+```
+
+### 命令行参数（Flag）
+
+详见[博客1](https://blog.csdn.net/u012436149/article/details/52870069)和[博客2](https://blog.csdn.net/lyc_yongcai/article/details/73456960)
+	
+#### 新建test.py文件：
+
+```python
+	#定义参数
+	flags = tf.flags
+	flags.DEFINE_string("para_name_1","default_val", "description")
+	flags.DEFINE_bool("para_name_2","default_val", "description")
+	
+	#session主体
+	def main(_): 
+		...
+```	
+
+#### 命令行调用
+
+```python
+	python test.py --para_name_1=name --para_name_2=name2
+```
