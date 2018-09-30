@@ -29,6 +29,10 @@ mnist = input_data.read_data_sets("F:\\learning\\tf\\mnist", one_hot=True)
 
 #### 封装函数
 
+卷积：相当于一个滤波器filter（带着一组固定权重的神经元），对局部输入数据进行卷积计算。每计算完一个数据窗口内的局部数据后，数据窗口不断平移滑动，直到计算完所有数据。
+
+池化：即取区域平均或最大
+
 ```python
 #tf.Session():需要在启动session之前构建整个计算图，然后启动该计算图。
 #tf.InteractiveSession():它能让你在运行图的时候，插入一些计算图，这些计算图是由某些操作(operations)构成的。这对于工作在交互式环境中的人们来说非常便利，比如使用IPython。
@@ -44,7 +48,6 @@ def bias_variable(shape):
 	return tf.Variable(initial)
  
 #卷积使用1 步长（stride size），0 边距（padding size）的模板，保证输出和输入是同一个大小。
-#滤波器filter（带着一组固定权重的神经元）对局部输入数据进行卷积计算。每计算完一个数据窗口内的局部数据后，数据窗口不断平移滑动，直到计算完所有数据。
 def conv2d(x, W):
 	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
  
