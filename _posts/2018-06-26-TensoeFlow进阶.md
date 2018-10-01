@@ -13,11 +13,11 @@ tags:
 ---
 
 
->>Last updated on 2018-9-29... 
+>>Last updated on 2018-10-1... 
 
 ### CNN
 
-下面代码转载自[bryan的博客](https://blog.csdn.net/Bryan__/article/details/75452243)，任务是MNIST手写数据集的分类。
+CNN代码转载自[bryan的博客](https://blog.csdn.net/Bryan__/article/details/75452243)，任务是MNIST手写数据集的分类。
 
 #### 数据集
 
@@ -129,4 +129,135 @@ print( "test accuracy %g"%accuracy.eval(feed_dict={x: mnist.test.images, y_: mni
 
 ### RNN
 
-待更新
+RNN代码转载自[莫烦的课程](https://morvanzhou.github.io/tutorials/machine-learning/tensorflow/5-08-RNN2/)，任务是MNIST手写数据集的分类。
+
+让 RNN 从每张图片的第一行像素读到最后一行, 然后再进行分类判断。
+
+#### 数据集
+
+```python 
+import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+tf.set_random_seed(1)   # set random seed
+
+# 导入数据
+mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+```
+
+#### 设定参数
+
+```python 
+# hyperparameters
+lr = 0.001                  # learning rate
+training_iters = 100000     # train step 上限
+batch_size = 128            
+n_inputs = 28               # MNIST data input (img shape: 28*28)
+n_steps = 28                # time steps
+n_hidden_units = 128        # neurons in hidden layer
+n_classes = 10              # MNIST classes (0-9 digits)‘
+
+# x y placeholder
+x = tf.placeholder(tf.float32, [None, n_steps, n_inputs])
+y = tf.placeholder(tf.float32, [None, n_classes])
+
+# 对 weights biases 初始值的定义
+weights = {
+    # shape (28, 128)
+    'in': tf.Variable(tf.random_normal([n_inputs, n_hidden_units])),
+    # shape (128, 10)
+    'out': tf.Variable(tf.random_normal([n_hidden_units, n_classes]))
+}
+biases = {
+    # shape (128, )
+    'in': tf.Variable(tf.constant(0.1, shape=[n_hidden_units, ])),
+    # shape (10, )
+    'out': tf.Variable(tf.constant(0.1, shape=[n_classes, ]))
+}
+```
+
+#### 搭建网络
+
+这个 RNN 总共有 3 个组成部分 ( input_layer, cell, output_layer)。
+
+```python 
+def RNN(X, weights, biases):
+
+    # 原始的 X 是 3 维数据, 我们需要把它变成 2 维数据才能使用 weights 的矩阵乘法
+    # X ==> (128 batches * 28 steps, 28 inputs)
+    X = tf.reshape(X, [-1, n_inputs])
+
+    # X_in = W*X + b
+    X_in = tf.matmul(X, weights['in']) + biases['in']
+    # X_in ==> (128 batches, 28 steps, 128 hidden) 换回3维
+    X_in = tf.reshape(X_in, [-1, n_steps, n_hidden_units])
+
+    # 使用 basic LSTM Cell.
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units, forget_bias=1.0, state_is_tuple=True)
+    init_state = lstm_cell.zero_state(batch_size, dtype=tf.float32) # 初始化全零 state
+	
+	# output_layer
+	# 把 outputs 变成 列表 [(batch, outputs)..] * steps
+    outputs = tf.unstack(tf.transpose(outputs, [1,0,2]))
+    results = tf.matmul(outputs[-1], weights['out']) + biases['out']    #选取最后一个 output
+	
+	return results
+```
+
+#### 训练网络
+
+```
+#计算 cost 和 train_op
+red = RNN(x, weights, biases)
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+train_op = tf.train.AdamOptimizer(lr).minimize(cost)
+
+correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+# init= tf.initialize_all_variables() # tf 马上就要废弃这种写法
+# 替换成下面的写法:
+init = tf.global_variables_initializer()
+
+with tf.Session() as sess:
+    sess.run(init)
+    step = 0
+    while step * batch_size < training_iters:
+        batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+        batch_xs = batch_xs.reshape([batch_size, n_steps, n_inputs])
+        sess.run([train_op], feed_dict={
+            x: batch_xs,
+            y: batch_ys,
+        })
+        if step % 20 == 0:
+            print(sess.run(accuracy, feed_dict={
+            x: batch_xs,
+            y: batch_ys,
+        }))
+        step += 1
+```
+		
+#### Acc结果
+
+```python
+0.1875
+0.65625
+0.726562
+0.757812
+0.820312
+0.796875
+0.859375
+0.921875
+0.921875
+0.898438
+0.828125
+0.890625
+0.9375
+0.921875
+0.9375
+0.929688
+0.953125
+....
+```	
+	
+	
+	
