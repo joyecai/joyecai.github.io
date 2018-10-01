@@ -24,7 +24,8 @@ CNN代码转载自[bryan的博客](https://blog.csdn.net/Bryan__/article/details
 ```python
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("F:\\learning\\tf\\mnist", one_hot=True)
+# 导入数据
+mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
  ```
 
 #### 封装函数
@@ -194,13 +195,13 @@ def RNN(X, weights, biases):
     # 使用 basic LSTM Cell.
     lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units, forget_bias=1.0, state_is_tuple=True)
     init_state = lstm_cell.zero_state(batch_size, dtype=tf.float32) # 初始化全零 state
-	
-	# output_layer
-	# 把 outputs 变成 列表 [(batch, outputs)..] * steps
+
+    # output_layer
+    # 把 outputs 变成 列表 [(batch, outputs)..] * steps
     outputs = tf.unstack(tf.transpose(outputs, [1,0,2]))
     results = tf.matmul(outputs[-1], weights['out']) + biases['out']    #选取最后一个 output
-	
-	return results
+    
+    return results
 ```
 
 #### 训练网络
