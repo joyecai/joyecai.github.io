@@ -4,7 +4,7 @@ title:      Tensorflow基础
 subtitle:   For practice
 date:       2018-06-26
 author:     Jiayue Cai
-header-img: img/post-bg-debug.png
+header-img: img/post-bg-tensorflow.jpg
 catalog: true
 tags:
     - Tensorflow
