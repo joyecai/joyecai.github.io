@@ -9,7 +9,6 @@ catalog: true
 tags:
     - Tensorflow
     - Deep Learning
-    - CNN
 ---
 
 
