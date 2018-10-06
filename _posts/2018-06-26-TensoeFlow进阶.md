@@ -4,7 +4,7 @@ title:      Tensorflow进阶
 subtitle:   For Deep Learning
 date:       2018-06-26
 author:     Jiayue Cai
-header-img: img/post-bg-tensorflow.jpg
+header-img: img/post-bg-black.jpg
 catalog: true
 tags:
     - Tensorflow
