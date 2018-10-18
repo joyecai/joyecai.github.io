@@ -205,7 +205,7 @@ def RNN(X, weights, biases):
 
 #### 训练网络
 
-```
+```python 
 #计算 cost 和 train_op
 red = RNN(x, weights, biases)
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
