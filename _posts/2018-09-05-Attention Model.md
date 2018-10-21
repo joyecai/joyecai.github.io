@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Attention Model
-subtitle:   注意力机制
+subtitle:   注意力机制(Attention Mechanism)
 date:       2018-09-05
 author:     Jiayue Cai
 header-img: img/post-bg-debug.png
