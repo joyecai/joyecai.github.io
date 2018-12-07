@@ -16,11 +16,11 @@ tags:
 ### 介绍
 
 Google 2017年论文[Attention is All you need](https://arxiv.org/pdf/1706.03762.pdf)中，为Attention做了如下定义：
-![Attention](https://upload-images.jianshu.io/upload_images/13187322-0904d285d5835ed6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/315/format/webp)
+![](/img/post/20180905/1.png)
 其中Q代表`query`、K代表`key`、V代表`value`，d为缩放因子
 
 计算Attention Weighted Value的流程图：
-![compute](https://upload-images.jianshu.io/upload_images/13187322-bd743638ad420f2c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/568/format/webp)
+![](/img/post/20180905/2.png)
 计算Q、K相似度 `->` 得分归一化(Attention Weight) `->` 根据得分对V进行加权
 
 ### 发展
@@ -32,7 +32,7 @@ Attention机制最早是在视觉图像领域提出来的(上世纪90年代)，�
 接着Attention机制被广泛应用在基于RNN/CNN等神经网络模型的各种NLP任务中。2017年，google机器翻译团队发表的《Attention is all you need》中大量使用了自注意力（self-attention）机制来学习文本表示。
 
 自注意力机制也成为了大家近期的研究热点，并在各种NLP任务上进行探索。下图展示了Attention研究进展的大概趋势：
-![dev](https://upload-images.jianshu.io/upload_images/13187322-2b66324483d782fe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/568/format/webp)
+![](/img/post/20180905/3.png)
 
 ### 应用
 
