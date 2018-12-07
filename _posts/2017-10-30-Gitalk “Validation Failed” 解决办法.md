@@ -33,11 +33,11 @@ gitalk 配置的最后一行要有个id属性
 ```code
 gitalk:
   enable: true    #是否开启Gitalk评论
-  clientID: ***                           #生成的clientID
-  clientSecret: ***                     #生成的clientSecret
-  repo: jsuyanyong.github.io    #仓库名称
-  owner: jsuyanyong    #github用户名
-  admin: jsuyanyong
+  clientID: 60110e51e72b4e2f40a9   #生成的clientID
+  clientSecret: 13edafa5bafe7a06eb293737d6607cf6b7198bc7  #同上
+  repo: coladrill.github.io    #仓库名称
+  owner: ColaDrill    #github用户名
+  admin: ColaDrill
   distractionFreeMode: true #是否启用类似FB的阴影遮罩
   id: 'window.location.pathname'
 ```
