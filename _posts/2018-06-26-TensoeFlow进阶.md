@@ -12,7 +12,7 @@ tags:
 ---
 
 
->>Last updated on 2018-10-1... 
+> Last updated on 2018-10-1... 
 
 ### CNN
 
