@@ -11,7 +11,9 @@ tags:
 ---
 
 
-> Last updated on 2018-9-5... 
+> Last updated on 2019-5-21... 
+
+> [推荐一篇好文章《细讲 | Attention Is All You Need》](https://mp.weixin.qq.com/s/RLxWevVWHXgX-UcoxDS70w)
 
 ### 介绍
 
