@@ -7,7 +7,7 @@ author:     Jiayue Cai
 header-img: img/post-bg-af.jpg
 catalog: true
 tags:
-    - Business
+    - Web
 ---
 
 
@@ -52,7 +52,9 @@ Docker 将应用程序与该程序的依赖，打包在一个文件里面。运�
 - **提供弹性的云服务。**因为 Docker 容器可以随开随关，很适合动态扩容和缩容。
 - **组建微服务架构。**通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构。
 
-### 正文
+### Kubernetes
+
+Kubernetes（常简称为K8s）是用于自动部署、扩展和管理容器化（containerized）应用程序的开源系统。
 
 
 
