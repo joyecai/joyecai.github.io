@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      蚂蚁金服云原生  Kubernetes
-subtitle:   SOFAStack、互联网金融关键任务场景部署、大规模分布式深度学习
+title:      金融级云原生分布式解决方案 SOFAStack
+subtitle:   Docker、Kubernetes、SOFAStack
 date:       2019-06-21
 author:     Jiayue Cai
 header-img: img/post-bg-af.jpg
@@ -17,7 +17,7 @@ tags:
 
 本次大会上，蚂蚁金服将会重点分享`Kubernetes 集群的管理`、`深度学习任务在 Kubernetes 上的大规模部署和调优`、`互联网金融`、`安全容器`等前沿课题。
 
-从 2016 年起，蚂蚁金服开始深度使用 Kubernetes，并作为最终用户案例被 CNCF 官方推荐，并且开源了自己的`金融级云原生分布式解决方案 SOFAStack`。
+从 2016 年起，蚂蚁金服开始深度使用 [Kubernetes（Made by Google）](https://kubernetes.io/zh/)，并且开源了自己的[金融级云原生分布式解决方案 SOFAStack](https://tech.antfin.com/sofa)。
 
 > [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)
 
@@ -56,6 +56,6 @@ Docker 将应用程序与该程序的依赖，打包在一个文件里面。运�
 
 Kubernetes（常简称为K8s）是用于自动部署、扩展和管理容器化（containerized）应用程序的开源系统。
 
-
+未完待续..
 
 
