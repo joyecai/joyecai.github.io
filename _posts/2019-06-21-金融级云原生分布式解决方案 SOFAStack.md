@@ -17,7 +17,7 @@ tags:
 
 本次大会上，蚂蚁金服将会重点分享`Kubernetes 集群的管理`、`深度学习任务在 Kubernetes 上的大规模部署和调优`、`互联网金融`、`安全容器`等前沿课题。
 
-从 2016 年起，蚂蚁金服开始深度使用 [Kubernetes（Made by Google）](https://kubernetes.io/zh/)，并且开源了自己的[金融级云原生分布式解决方案 SOFAStack](https://tech.antfin.com/sofa)。
+从 2016 年起，蚂蚁金服开始深度使用 [Kubernetes（Made by Google）](https://kubernetes.io/zh/)，并且开源了自己的[金融级云原生分布式解决方案 SOFAStack](https://tech.antfin.com/sofa)，作为最终用户案例被 Cloud Native Computing Foundation (CNCF) 官方推荐。
 
 > [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)
 
