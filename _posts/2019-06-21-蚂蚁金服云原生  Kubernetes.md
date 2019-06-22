@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      蚂蚁金服云原生 KubeCon
+title:      蚂蚁金服云原生  Kubernetes
 subtitle:   SOFAStack、互联网金融关键任务场景部署、大规模分布式深度学习
 date:       2019-06-21
 author:     Jiayue Cai
@@ -11,9 +11,15 @@ tags:
 ---
 
 
-> Last updated on 2019-6-21...
+> Last updated on 2019-6-22...
 
-> [参考文章1]()、[参考文章2](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)
+6 月 24 日，国内云原生领域最重要的会议即将来袭！`KubeCon` + `CloudNativeCon` + `Open Source Summit China 2019`将在上海召开，蚂蚁金服此次也会重度参与，由多名技术专家进行分享并组织 workshop，为参会者献上技术的饕餮盛宴。
+
+本次大会上，蚂蚁金服将会重点分享`Kubernetes 集群的管理`、`深度学习任务在 Kubernetes 上的大规模部署和调优`、`互联网金融`、`安全容器`等前沿课题。
+
+从 2016 年起，蚂蚁金服开始深度使用 Kubernetes，并作为最终用户案例被 CNCF 官方推荐，并且开源了自己的`金融级云原生分布式解决方案 SOFAStack`。
+
+> [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)
 
 ### 背景知识
 
@@ -48,6 +54,6 @@ Docker 将应用程序与该程序的依赖，打包在一个文件里面。运�
 
 ### 正文
 
-待写...
+
 
 
