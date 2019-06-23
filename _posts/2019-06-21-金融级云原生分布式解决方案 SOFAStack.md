@@ -11,9 +11,9 @@ tags:
 ---
 
 
-> Last updated on 2019-6-22...
+> Last updated on 2019-6-23...
 
-![](/img/post/20190621/1.gif)
+![](/img/post/20190621/0.gif)
 
 6 月 24 日，国内云原生领域最重要的会议即将来袭！`KubeCon` + `CloudNativeCon` + `Open Source Summit China 2019`将在上海召开，蚂蚁金服此次也会重度参与，由多名技术专家进行分享并组织 workshop，为参会者献上技术的饕餮盛宴。
 
@@ -25,9 +25,11 @@ tags:
 
 ### 背景知识
 
-#### IaaS
+![](/img/post/20190621/1.jpg)
 
-2006年AWS推出EC2（Elastic Compute Cloud），作为第一代IaaS（Infrastructure as a Service），用户可以通过AWS快速的申请到计算资源，并在上面部署自己的互联网服务。
+#### IaaS 基础设施服务
+
+2006年AWS推出EC2（Elastic Compute Cloud），作为第一代`IaaS（Infrastructure as a Service）`，用户可以通过AWS快速的申请到计算资源，并在上面部署自己的互联网服务。
 
 **IaaS从本质上讲是服务器租赁并提供基础设施外包服务。**就比如我们用的水和电一样，我们不会自己去引入自来水和发电，而是直接从自来水公司和电网公司购入，并根据实际使用付费。
 
@@ -40,7 +42,7 @@ EC2真正对IT的改变是硬件的虚拟化（更细粒度的虚拟化），而
 
 以上是AWS为代表的公有云IaaS，还有使用OpenStack构建的私有云也能够提供IaaS能力。
 
-#### PaaS
+#### PaaS 平台服务
 
 **PaaS（Platform as a Service）是构建在IaaS之上的一种平台服务，提供操作系统安装、监控和服务发现等功能，用户只需要部署自己的应用即可。**
 
