@@ -11,7 +11,7 @@ tags:
 ---
 
 
-> Last updated on 2019-6-23...
+> Last updated on 2019-6-27...
 
 ![](/img/post/20190621/0.gif)
 
@@ -21,7 +21,7 @@ tags:
 
 从 2016 年起，蚂蚁金服开始深度使用 [Kubernetes（Made by Google）](https://kubernetes.io/zh/)，并且开源了自己的[金融级云原生分布式解决方案 SOFAStack](https://github.com/sofastack)，作为最终用户案例被 Cloud Native Computing Foundation (CNCF) 官方推荐。
 
-> [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)
+> [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)、[会后总结](https://mp.weixin.qq.com/s/9krLbCDg6EaAZjJvoMl0qA)
 
 ### 背景知识
 
@@ -104,12 +104,28 @@ Kubernetes（常简称为K8s）是用于自动部署、扩展和管理容器化�
 ### [SOFAStack]((https://tech.antfin.com/sofa))
 
 全称Scalable Open Financial Architecture Stack，是蚂蚁金服自主研发的金融级分布式架构，包含了构建金融级云原生架构所需的各个组件，是在金融场景里锤炼出来的最佳实践。
+![](/img/post/20190621/10.png)
+
+蚂蚁金服从 2007 年开始从集中式架构走向分布式架构。我们把过去十多年的技术演进过程中自主研发的一套金融级分布式架构沉淀成为 SOFAStack™（Scalable Open Financial Architecture Stack）。
+
+从 2007 年到 2012 年，蚂蚁金服完成所有业务系统的`模块化、服务化改造`。通过 TCC 模式解决了服务化、数据拆分等带来的数据一致性的问题，通过注册中心解决了服务单点的问题。
+
+在完成服务化改造后，随着服务集群的增大，系统的伸缩性遇到了瓶颈，另外为了满足金融级的属性，蚂蚁金服对系统可用性、数据一致性提出了更高的要求。
+
+蚂蚁金服从 2013 年开始摸索出了一套`单元化`的思想，并基于此，推出了`同城双活`、`异地多活`、`弹性调度等能力`，保证业务不停机，数据不丢失。
+
+再之后随着国内互联网金融的崛起、蚂蚁金服的国际化，蚂蚁金服也将自己的能力和技术开放出来，在金融云上以云产品的形式存在，开发者可以基于此快速搭建金融级能力的分布式系统，同时我们也将内部的一些实践开源出来。
+
+从 2017 年开始，`云原生的理念`正在快速发展，面对云原生带来的机会和改变，蚂蚁金服的策略是积极拥抱云原生。因为云原生带来的思想和理念刚好可以用来解决蚂蚁金服内部遇到的一些场景和问题。
 
 从 2018 年 4 月 19 日宣布开源至今，SOFAStack 目前已经开源了包括 `SOFABoot`、 `SOFARPC`、`SOFALookout`、`SOFATracer`、`SOFARegistry` 等在内的一系列微服务相关的项目，并投入分布式事务 Seata 进行重要贡献。
-![](/img/post/20190621/3.png)
+![](/img/post/20190621/11.png)
+
+> [sofastack开源](https://github.com/sofastack)、[seata开源](https://github.com/seata)
 
 #### 微服务体系
 
+![](/img/post/20190621/12.png)
 SOFAStack 包含了构建微服务体系的众多组件，包括`研发框架`、`RPC 框架`，`服务注册中心`，`分布式链路追踪`，`Metrics监控度量`、`分布式事务框架`、`服务治理平台`等，结合社区优秀的开源产品，可以快速搭建一套完善的微服务体系。
 
 #### 云原生架构
