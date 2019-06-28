@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      金融级云原生分布式解决方案 SOFAStack
-subtitle:   Docker、Kubernetes、SOFAStack
+title:      金融级分布式架构 SOFAStack
+subtitle:   Docker、Kubernetes、蚂蚁金服
 date:       2019-06-21
 author:     Jiayue Cai
 header-img: img/post-bg-af.jpg
