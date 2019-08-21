@@ -93,7 +93,7 @@ NN对应的一棵树转化代价太大，优化方法：降低蒸馏多颗tree�
 **在线实验表明：**
 - DeepGBM 契合在线场景，且效果比所有的baseline模型都要好
 
-#### 个人吐槽点
+### 个人吐槽点
 
 - CatNN整个就是原来的DeepFM
 - online实验时的loss根本不涉及gbdt，也不涉及gbdt的更新
