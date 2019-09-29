@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      DeepGBM 针对在线任务的GBDT2NN
-subtitle:   CatNN、GBDT2NN、离散+连续+online
+subtitle:   CatNN、GBDT2NN、模型发展整理
 date:       2019-08-21
 author:     Jiayue Cai
 header-img: img/post-bg-debug.png
@@ -10,7 +10,7 @@ tags:
     - Recommending System
 ---
 
-> Last updated on 2019-08-21... 
+> Last updated on 2019-09-29... 
 
 [《DeepGBM: A Deep Learning Framework Distilled by GBDT for Online Prediction Tasks》](https://dl.acm.org/ft_gateway.cfm?id=3330858&ftid=2075426&dwn=1&CFID=153568962&CFTOKEN=a5d50ed915954878-0DAF2A4A-E381-79ED-3655515382D3219D)，发表在 KDD 2019
 
@@ -97,4 +97,28 @@ NN对应的一棵树转化代价太大，优化方法：降低蒸馏多颗tree�
 
 - CatNN整个就是原来的DeepFM
 - online实验时的loss根本不涉及gbdt，也不涉及gbdt的更新
+
+### 模型发展整理
+
+> https://github.com/shenweichen/DeepCTR
+
+![](/img/post/20190821/16.png)
+
+- **Convolutional Click Prediction Model**	[CIKM 2015]A Convolutional Click Prediction Model
+- **Factorization-supported Neural Network**	[ECIR 2016]Deep Learning over Multi-field Categorical Data: A Case Study on User Response Prediction
+- **Product-based Neural Network**	[ICDM 2016]Product-based neural networks for user response prediction
+- **Wide & Deep**	[DLRS 2016]Wide & Deep Learning for Recommender Systems
+- **DeepFM**	[IJCAI 2017]DeepFM: A Factorization-Machine based Neural Network for CTR Prediction
+- **Piece-wise Linear Model**	[arxiv 2017]Learning Piece-wise Linear Models from Large Scale Data for Ad Click Prediction
+- **Deep & Cross Network**	[ADKDD 2017]Deep & Cross Network for Ad Click Predictions
+- **Attentional Factorization Machine**	[IJCAI 2017]Attentional Factorization Machines: Learning the Weight of Feature Interactions via Attention Networks
+- **Neural Factorization Machine**	[SIGIR 2017]Neural Factorization Machines for Sparse Predictive Analytics
+- **xDeepFM**	[KDD 2018]xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems
+- **AutoInt**	[arxiv 2018]AutoInt: Automatic Feature Interaction Learning via Self-Attentive Neural Networks
+- **Deep Interest Network**	[KDD 2018]Deep Interest Network for Click-Through Rate Prediction
+- **Deep Interest Evolution Network**	[AAAI 2019]Deep Interest Evolution Network for Click-Through Rate Prediction
+- **NFFM**	[arxiv 2019]Operation-aware Neural Networks for User Response Prediction
+- **FGCNN**	[WWW 2019]Feature Generation by Convolutional Neural Network for Click-Through Rate Prediction
+- **Deep Session Interest Network**	[IJCAI 2019]Deep Session Interest Network for Click-Through Rate Prediction
+- **FiBiNET**	[RecSys 2019]FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction
 
