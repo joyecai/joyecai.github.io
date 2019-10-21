@@ -13,15 +13,15 @@ tags:
 
 > Last updated on 2019-6-27...
 
-![](/img/post/20190621/0.gif)
-
-6 月 24 日，国内云原生领域最重要的会议即将来袭！`KubeCon` + `CloudNativeCon` + `Open Source Summit China 2019`将在上海召开，蚂蚁金服此次也会重度参与，由多名技术专家进行分享并组织 workshop，为参会者献上技术的饕餮盛宴。
+6 月 24 日，国内云原生领域最重要的会议即将来袭！`KubeCon` + `CloudNativeCon` + `Open Source Summit China 2019`将在上海召开，蚂蚁金服此次也会重度参与，由多名技术专家进行分享并组织 workshop。
 
 本次大会上，蚂蚁金服将会重点分享`Kubernetes 集群的管理`、`深度学习任务在 Kubernetes 上的大规模部署和调优`、`互联网金融`、`安全容器`等前沿课题。
 
 从 2016 年起，蚂蚁金服开始深度使用 [Kubernetes（Made by Google）](https://kubernetes.io/zh/)，并且开源了自己的[金融级云原生分布式解决方案 SOFAStack](https://github.com/sofastack)，作为最终用户案例被 Cloud Native Computing Foundation (CNCF) 官方推荐。
 
 > [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)、[会后总结](https://mp.weixin.qq.com/s/9krLbCDg6EaAZjJvoMl0qA)
+
+> 吐槽一下，阿里整个风格就是一个业务驱动公司，公司内部框架基本都是基于谷歌开源框架封装再封装。
 
 ### 背景知识
 
