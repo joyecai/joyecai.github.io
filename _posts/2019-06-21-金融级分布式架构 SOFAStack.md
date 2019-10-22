@@ -21,7 +21,7 @@ tags:
 
 > [以上消息链接](https://mp.weixin.qq.com/s/fm6A4RnVZv6Ts44Z4A5nig)、[会后总结](https://mp.weixin.qq.com/s/9krLbCDg6EaAZjJvoMl0qA)
 
-> 吐槽一下，阿里整个风格就是一个业务驱动公司，公司内部框架基本都是基于谷歌开源框架封装再封装。
+> 吐槽一下，阿里整个风格就是一个强业务驱动型公司，公司内部框架基本都是基于谷歌开源框架封装再封装。
 
 ### 背景知识
 
