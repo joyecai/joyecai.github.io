@@ -14,7 +14,7 @@ tags:
 
 > Last updated on 2019-11-7... 
 
-> [《细讲 | Attention Is All You Need》](https://mp.weixin.qq.com/s/RLxWevVWHXgX-UcoxDS70w)、[《Attention is All You Need》浅读（简介+代码）](https://kexue.fm/archives/4765)
+> [《细讲Attention Is All You Need》](https://mp.weixin.qq.com/s/RLxWevVWHXgX-UcoxDS70w)、[《Attention is All You Need》浅读（简介+代码）](https://kexue.fm/archives/4765)
 
 ### 发展
 
@@ -71,15 +71,15 @@ Google论文的主要贡献之一是它表明了内部注意力在机器翻译�
 
 ### Attention分类
 
-1、按输出
+**1、按输出：**
 - soft attention：保留所有分量均做加权，输出注意力分布的概率值
 - hard attention：在分布中以某种采样策略选取部分分量，输出onehot向量（强化学习）
 
-2、按关注的范围
+**2、按关注的范围:**
 - Globle attention：全局注意力顾名思义对整个feature mapping进行注意力加权
 - Local attention：局部注意力有两种，第一种首先通过一个hard-globle-attention锁定位置，在位置上下某个local窗口进行注意力加权
 
-3、按score函数
+**3、按score函数:**
 - 点		积：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub>
 - Cosine相似性：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub> / &#124;&#124;Query&#124;&#124; * &#124;&#124;Key<sub>i</sub>&#124;&#124;
 - M L P 网	络：Similarity(Query,Key<sub>i</sub>) = Query*Key<sub>i</sub> MLP(Query,Key<sub>i</sub>)
