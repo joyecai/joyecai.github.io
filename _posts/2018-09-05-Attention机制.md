@@ -14,7 +14,7 @@ tags:
 
 > Last updated on 2019-11-8... 
 
-> [《细讲Attention Is All You Need》](https://mp.weixin.qq.com/s/RLxWevVWHXgX-UcoxDS70w)、[《Attention is All You Need》浅读（简介+代码）](https://kexue.fm/archives/4765)、[Self-Attention与Transformer](https://zhuanlan.zhihu.com/p/47282410)
+> [《细讲Attention Is All You Need》](https://mp.weixin.qq.com/s/RLxWevVWHXgX-UcoxDS70w)、[《Attention is All You Need》浅读（简介+代码）](https://kexue.fm/archives/4765)、[Self-Attention与Transformer](https://zhuanlan.zhihu.com/p/47282410)、[【NLP】Transformer详解](https://zhuanlan.zhihu.com/p/44121378)
 
 ### 前言
 
@@ -103,7 +103,7 @@ Transformer模型的整体结构如下图所示：
 
 总结一下，k和v的来源总是相同的，q在`encoder`及第一级`decoder`中与k,v来源相同，在encoder-decoder attention layer中与k,v来源不同。
 
-### Position Embedding
+#### Position Embedding
 
 ![](/img/post/20180905/13.jpg)
 
