@@ -123,7 +123,7 @@ Position Embedding本身是一个绝对位置的信息，但在语言中，相�
 
 ![](/img/post/20180905/14.png)
 
-Add代表`Residual Connection`，是为了解决多层神经网络训练困难的问题，通过将前一层的信息无差的传递到下一层，可以有效的仅关注差异部分，这一方法之前在图像处理结构如ResNet等中常常用到。
+Add代表`Residual Connection`，是为了解决多层神经网络训练困难的问题，通过将前一层的信息无差地传递到下一层，可以有效的仅关注差异部分，这一方法之前在图像处理结构如ResNet等中常常用到。
 
 Norm代表`Layer Normalization`，通过对层的激活值的归一化，可以加速模型的训练过程，使其更快的收敛，可参考这篇论文[《Layer Normalization》](https://arxiv.org/abs/1607.06450)。
 
