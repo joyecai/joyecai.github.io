@@ -122,3 +122,4 @@ NN对应的一棵树转化代价太大，优化方法：降低蒸馏多颗tree�
 - **Deep Session Interest Network**	[IJCAI 2019]Deep Session Interest Network for Click-Through Rate Prediction
 - **FiBiNET**	[RecSys 2019]FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction
 
+> [最新深度推荐系统文章](https://mp.weixin.qq.com/s?__biz=MzU2ODA0NTUyOQ==&mid=2247483711&idx=1&sn=7fd0850d263afd9c8aa1a286fd0f1ad9&chksm=fc92bb89cbe5329fa0c8c0dac636795b693e3e1dba3aeb6658f2da1494bc7996f7f9bcce477f&scene=21#wechat_redirect)
