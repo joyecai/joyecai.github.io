@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      DeepGBM 针对在线任务的GBDT2NN
-subtitle:   CatNN、GBDT2NN、模型发展整理
+subtitle:   CatNN、GBDT2NN
 date:       2019-08-21
 author:     Jiayue Cai
 header-img: img/post-bg-debug.png
