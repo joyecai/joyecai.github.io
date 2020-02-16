@@ -36,57 +36,68 @@ import tensorflow as tf
 
 ```python
 # 定义常量 a
+
 a = tf.constant(1)
 
 # 定义变量 b（这个例子中把b作计数器了）
+
 b = tf.Variable(0, name='counter')
 print(b.name)
 
 # 加法（等式左边在tf中可以理解为步骤名）
+
 sum = tf.add(a,b)
-	
+
 # 更新赋值
+
 update = tf.assign(b, sum)
 ```	
 ### 初始化所有变量并且运行（激活）
 
 ```python
 # 如果定义了变量，就一定要初始化它们
+
 init = tf.global_variables_initializer() 
 
 # 运行（把sess理解为指针，sess.run(xx步骤)代表运行该步骤）
+
 with tf.Session() as sess:
-	sess.run(init)             #运行变量的初始化
-	for _ in range(3):
-		sess.run(update)       #运行update步骤
-		print(sess.run(sum))   #运行sum步骤
+    sess.run(init)             #运行变量的初始化
+    for _ in range(3):
+        sess.run(update)       #运行update步骤
+        print(sess.run(sum))   #运行sum步骤
 ```
 
 ### 矩阵
 
 ```python
+
 #定义矩阵
+
 matrix1 = tf.constant([ [3., 3.] ])   #1x2的矩阵
 matrix2 = tf.constant([ [2.],         #2x1的矩阵
                         [2.]  ])
 
 #矩阵乘法
+
 product = tf.matmul(matrix1, matrix2)
-```	
+```
 
 ### 运行（即启动图）
 
 ```python
 #方法1
+
 sess = tf.Session()
 result = sess.run(product)
 print result
 sess.close()
 
 #方法2
+
 with tf.Session() as sess：
-	result = sess.run([product])
-	print result
+    result = sess.run([product])
+    print result
 ```
 
 ### 指派GPU运行
@@ -97,12 +108,12 @@ with tf.Session() as sess：
 #with…Device语句用来指派特定的CPU或GPU执行操作：
 
 with tf.Session() as sess:
-	with tf.device("/gpu:1"):
-		matrix1 = tf.constant([[3., 3.]])
-		matrix2 = tf.constant([[2.],[2.]])
-		product = tf.matmul(matrix1, matrix2)
-		...
-```	
+    with tf.device("/gpu:1"):
+        matrix1 = tf.constant([[3., 3.]])
+        matrix2 = tf.constant([[2.],[2.]])
+        product = tf.matmul(matrix1, matrix2)
+        ...
+```
 
 ### Feed机制（命令行输入参数） 
 
@@ -115,7 +126,7 @@ input2 = tf.placeholder(tf.float32)
 output = tf.mul(input1, input2)
 
 with tf.Session() as sess:
-	print sess.run([output], feed_dict={input1:[7.], input2:[2.]})
+    print sess.run([output], feed_dict={input1:[7.], input2:[2.]})
 
 # 输出:
 # [array([ 14.], dtype=float32)]
@@ -124,19 +135,22 @@ with tf.Session() as sess:
 ### 命令行参数（Flag）
 
 详见[博客1](https://blog.csdn.net/u012436149/article/details/52870069)和[博客2](https://blog.csdn.net/lyc_yongcai/article/details/73456960)
-	
+
 #### 新建test.py文件：
 
 ```python
 #定义参数
+
 flags = tf.flags
 flags.DEFINE_string("para_name_1","default_val", "description")
 flags.DEFINE_bool("para_name_2","default_val", "description")
 
 #session主体
+
+
 def main(_): 
-	...
-```	
+    ...
+```
 
 #### 命令行调用
 
