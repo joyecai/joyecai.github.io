@@ -63,9 +63,8 @@ init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)             #运行变量的初始化
-    
-    for _ in range(3):
 
+    for _ in range(3):
         sess.run(update)       #运行update步骤
 
         print(sess.run(sum))   #运行sum步骤
@@ -80,6 +79,7 @@ with tf.Session() as sess:
 matrix1 = tf.constant([ [3., 3.] ])   #1x2的矩阵
 
 matrix2 = tf.constant([ [2.],         #2x1的矩阵
+
                         [2.]  ])
 
 #矩阵乘法
