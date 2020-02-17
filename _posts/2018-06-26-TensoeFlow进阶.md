@@ -124,8 +124,6 @@ train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(y_conv ,1), tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction , "float"))
 sess.run(tf.initialize_all_variables())
- 
- 
 
 for i in range(20000):
     batch = mnist.train.next_batch(50)
@@ -163,11 +161,17 @@ mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 # hyperparameters
 
 lr = 0.001                  # learning rate
+
 training_iters = 100000     # train step 上限
+
 batch_size = 128            
+
 n_inputs = 28               # MNIST data input (img shape: 28*28)
+
 n_steps = 28                # time steps
+
 n_hidden_units = 128        # neurons in hidden layer
+
 n_classes = 10              # MNIST classes (0-9 digits)‘
 
 # x y placeholder
