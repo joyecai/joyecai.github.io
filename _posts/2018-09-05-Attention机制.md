@@ -103,6 +103,8 @@ Transformer模型的整体结构如下图所示：
 
 总结一下，k和v的来源总是相同的，q在`encoder`及第一级`decoder`中与k,v来源相同，在encoder-decoder attention layer中与k,v来源不同。
 
+> [谷歌大改Transformer注意力，速度、内存利用率都提上去了](https://mp.weixin.qq.com/s?__biz=MzAxMjMwODMyMQ==&mid=2456359946&idx=2&sn=e07b34bbbeda903129f7da982aac077b&chksm=8c2e6e04bb59e712d321eb94471721e72a757e451d7f4977314cdf918d99e682d04bedab71e8&mpshare=1&scene=23&srcid=1031Pa5Ra2iwYF6czFr7pKQa&sharer_sharetime=1604210190797&sharer_shareid=cc983be31429dfbd5199d63f0d94b825#rd)
+
 #### Position Embedding
 
 ![](/img/post/20180905/13.jpg)
