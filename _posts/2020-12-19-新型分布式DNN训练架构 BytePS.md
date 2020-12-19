@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      新型分布式DNN训练架构 BytePS
-subtitle:   PS架构、All-reduce架构
+subtitle:   PS架构、All-reduce架构、机器间网络通信问题优化、多卡带宽竞争问题优化、CPU 瓶颈问题优化
 date:       2020-12-19
 author:     Jiayue Cai
 header-img: img/post-bg-rwd-big_data.jpg
