@@ -14,7 +14,7 @@ tags:
 
 > Last updated on 2020-12-20... 
 
-> [机器之心文章](https://mp.weixin.qq.com/s/eiXAPDQvqvLcnPj1liXalw)、[论文链接]https://www.usenix.org/conference/osdi20/presentation/jiang)、[开源代码](https://github.com/bytedance/byteps)
+> [机器之心文章](https://mp.weixin.qq.com/s/eiXAPDQvqvLcnPj1liXalw)、[论文链接](https://www.usenix.org/conference/osdi20/presentation/jiang)、[开源代码](https://github.com/bytedance/byteps)
 
 目前工业界主流的分布式训练是基于数据并行方式实现的，其中具有代表性的两种架构是`参数服务器（PS）`和`All-reduce`。
 
