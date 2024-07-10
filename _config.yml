@@ -59,8 +59,8 @@ kramdown:
 # Gitalk
 gitalk:
   enable: true    #是否开启Gitalk评论
-  clientID: 60110e51e72b4e2f40a9   #生成的clientID
-  clientSecret: 13edafa5bafe7a06eb293737d6607cf6b7198bc7  #同上
+  clientID: Ov23li1yZ50In0gCR5WO   #生成的clientID
+  clientSecret: d652998fcaaaa4db806f0dc9f1817ce96e45f69e  #同上
   repo: joyecai.github.io    #仓库名称
   owner: joyecai    #github用户名
   admin: joyecai
