@@ -1,17 +1,17 @@
 # Site settings
-title: Jiayue Cai's Blog
-SEOTitle: Jiayue Cai's Blog
+title: Joye Cai's Blog
+SEOTitle: Joye Cai's Blog
 header-img: img/post-bg-desk.jpg
 email: caijiayue2@gmail.com
 description: "Know more, Do more, Be more."
-keyword: "Jiayue Cai, Jiayue Cai's Blog, 蔡嘉跃, 蔡嘉跃的博客, joyecai, joyecai"
+keyword: "Joye Cai Joye Cai's Blog, Jiayue Cai, Jiayue Cai's Blog, 蔡嘉跃, 蔡嘉跃的博客, joyecai"
 url: "http://joyecai.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/joyecai/joyecai.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Jiayue Cai"
+sidebar-about-description: "Joye Cai"
 sidebar-avatar: /img/about-me.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
