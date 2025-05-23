@@ -1,0 +1,49 @@
++---------------------+
+| Sensors/Perception  |
+| (Input: Text, etc.) |
++---------------------+
+          |
+          v
++---------------------+
+|        LLM          |
+|      (Brain)        |
++---------------------+
+     ^    |    ^
+     |    |    |
+     |    v    |
++----|---------|----+
+| Planning Module |  |
++-----------------+  |
+     |    |    |
++----|---------|----+
+| Memory (ST, LT) |  |
++-----------------+  |
+     |    |    |
++----|---------|----+
+| Tool Use Module |  | E.g., RAG, Code Interpreter, Web Search
+| (Tools)         |  |
++-----------------+  |
+          |
+          v
++---------------------+
+| Actuators/Action    |
+| (Output: Text, API)|
++---------------------+
+
+**Detailed Textual Description (if ASCII art is unclear):**
+
+This diagram represents the AI Agent components in a somewhat Hub-and-Spoke / Flow manner.
+
+1.  At the top, "Sensors/Perception (Input: Text, etc.)" box, with an arrow pointing downwards.
+2.  This arrow leads to the central "LLM (Brain)" box.
+3.  The "LLM (Brain)" box has arrows pointing to and from several modules, indicating interaction:
+    *   An arrow points from LLM down to "Planning Module". An arrow also points from "Planning Module" back up to LLM.
+    *   An arrow points from LLM down to "Memory (ST, LT)" (Short-Term, Long-Term). An arrow also points from "Memory" back up to LLM.
+    *   An arrow points from LLM down to "Tool Use Module (Tools)". An arrow also points from "Tool Use Module" back up to LLM. This box has a note: "E.g., RAG, Code Interpreter, Web Search".
+4.  An arrow points downwards from the "LLM (Brain)" (or could be seen as an aggregation of outputs from the modules directed by the LLM) to the "Actuators/Action (Output: Text, API)" box at the bottom.
+
+The LLM is central, receiving input, and then interacting with Planning, Memory, and Tools to produce an action.Okay, I have created the RAG workflow and AI Agent Components diagrams.
+
+Now, I'll create the LLM, RAG, and Agent Relationship diagram. I'll opt for a layered textual representation.
+
+**3. LLM, RAG, and Agent Relationship Diagram (`img/post/20250522/llm_rag_agent_relationship.txt`)**

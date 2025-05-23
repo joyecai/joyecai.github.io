@@ -1,0 +1,29 @@
+[User Query]
+     |
+     v
++---------------------+     +-------------------+
+|      Retriever      |<--->|  Knowledge Base   |
++---------------------+     +-------------------+
+     | (Relevant Documents)
+     v
++-----------------------------------+
+| Query + Relevant Documents (Context) |
++-----------------------------------+
+     |
+     v
++---------------------+
+|    LLM Generator    |
++---------------------+
+     |
+     v
+[Final Answer]
+
+**Detailed Textual Description (if ASCII art is unclear):**
+
+The flowchart starts with a "User Query" box.
+An arrow points down from "User Query" to a "Retriever" box.
+The "Retriever" box has a bidirectional arrow connecting it to a "Knowledge Base" box, indicating that the retriever searches/interacts with the knowledge base.
+An arrow points down from the "Retriever" box, labeled "(Relevant Documents)".
+This arrow points to a box labeled "Query + Relevant Documents (Context)". This signifies the augmentation step.
+An arrow points down from this "Query + Relevant Documents (Context)" box to an "LLM Generator" box.
+Finally, an arrow points down from the "LLM Generator" box to a "Final Answer" box.

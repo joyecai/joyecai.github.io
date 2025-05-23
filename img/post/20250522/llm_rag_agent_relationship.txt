@@ -1,0 +1,46 @@
++-----------------------------------------------------------------+
+|                                                                 |
+|                            AGENT                                |
+|  (Planning, Tool Use, Memory, Task Execution)                   |
+|                                                                 |
+|   +---------------------------------------------------------+   |
+|   |                                                         |   |
+|   |                 RAG (Retrieval Augmented Generation)    |   |
+|   |      (LLM + External Knowledge Access)                  |   |
+|   |                                                         |   |
+|   |      +---------------------------------------------+    |   |
+|   |      |                                             |    |   |
+|   |      |        LLM (Large Language Model)           |    |   |
+|   |      |   (Core Language Understanding & Generation)|    |   |
+|   |      |                                             |    |   |
+|   |      +---------------------------------------------+    |   |
+|   |                                                         |   |
+|   +---------------------------------------------------------+   |
+|                                                                 |
++-----------------------------------------------------------------+
+
+**Detailed Textual Description (if ASCII art is unclear):**
+
+This diagram uses nested boxes to represent a layered relationship.
+
+1.  **Outermost Layer: AGENT**
+    *   A large box labeled "AGENT".
+    *   Sub-text: "(Planning, Tool Use, Memory, Task Execution)".
+    *   This represents the most comprehensive system.
+
+2.  **Middle Layer (within AGENT): RAG**
+    *   Inside the AGENT box, there's a slightly smaller, nested box labeled "RAG (Retrieval Augmented Generation)".
+    *   Sub-text: "(LLM + External Knowledge Access)".
+    *   This shows that RAG is a part of or a capability that can be utilized by the Agent, and it builds upon the LLM.
+
+3.  **Innermost Layer (within RAG and AGENT): LLM**
+    *   Inside the RAG box (and thus also within the AGENT box), there's the smallest box labeled "LLM (Large Language Model)".
+    *   Sub-text: "(Core Language Understanding & Generation)".
+    *   This represents the foundational component.
+
+The nesting clearly shows that LLM is the core, RAG is an enhancement or specific application pattern of LLM by adding external knowledge access, and an Agent is a broader system that uses LLM (often an RAG-enabled LLM) as its central intelligence, augmented by other capabilities like planning, memory, and tool use. The Agent orchestrates these components to achieve goals.
+
+---
+
+All three textual diagrams have been created and saved to the `img/post/20250522/` directory.
+I will now submit the subtask report.
