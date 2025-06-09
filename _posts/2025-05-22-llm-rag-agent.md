@@ -13,6 +13,8 @@ tags:
     - AI
 ---
 
+> 本篇博客由谷歌的Jules生成 
+
 ## 前言
 
 近年来，人工智能领域取得了令人瞩目的进展，其中大型语言模型（LLM）、检索增强生成（RAG）和智能体（Agent）是三个备受关注的核心概念。它们不仅各自展现出强大的能力，而且相互关联，共同推动着AI技术向更智能、更实用的方向发展。本文将详细介绍这三个概念，并探讨它们之间的紧密联系。
@@ -69,15 +71,8 @@ RAG的出现主要是为了解决LLM的一些关键局限性，特别是：
 ### RAG的工作流程
 
 RAG 工作流程示意图:
-```mermaid
-graph TD
-    A[用户查询] --> B(检索器);
-    B -- 访问 --> C((知识库));
-    B -- 检索到的文档 --> D[增强提示: 查询 + 文档];
-    A -- 原始查询 --> D;
-    D --> E[大型语言模型];
-    E --> F[最终答案];
-```
+
+![](/img/post/20250522/1.png)
 
 RAG系统通常包含以下三个主要步骤：
 
@@ -100,56 +95,8 @@ RAG系统通常包含以下三个主要步骤：
 智能体（Agent）是一种能够感知其环境、进行思考和规划，并采取行动以实现特定目标的计算实体。在当前的AI语境下，AI Agent通常以一个强大的LLM作为其核心“大脑”，并辅以其他关键组件：
 
 AI Agent 组件示意图:
-```mermaid
-graph TD
-    LLM[LLM (核心大脑)];
 
-    subgraph "输入"
-        direction LR
-        Perception[感知 (文本, 图像等)];
-    end
-    
-    subgraph "内部处理模块"
-        direction TB
-        Planning[规划能力];
-        Memory[记忆 (短期/长期)];
-        ToolUse[工具使用];
-    end
-
-    subgraph "输出"
-        direction LR
-        Action[行动 (文本, API调用等)];
-    end
-
-    Perception --> LLM;
-    LLM --> Planning;
-    LLM --> Memory;
-    LLM --> ToolUse;
-    LLM --> Action;
-
-    subgraph "可用工具示例"
-      direction TB
-      T1[工具1: RAG 系统];
-      T2[工具2: 代码解释器];
-      T3[工具3: 网页搜索API];
-      T_etc[等等...];
-    end
-    
-    ToolUse -.-> T1;
-    ToolUse -.-> T2;
-    ToolUse -.-> T3;
-    ToolUse -.-> T_etc;
-
-    class LLM llmCore;
-    class Perception,Action inputOutput;
-    class Planning,Memory,ToolUse processingModule;
-    class T1,T2,T3,T_etc tool;
-
-    classDef llmCore fill:#ddeeff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef inputOutput fill:#eeffdd,stroke:#333,stroke-width:2px,color:#000000;
-    classDef processingModule fill:#ffeebb,stroke:#333,stroke-width:2px,color:#000000;
-    classDef tool fill:#eee,stroke:#555,stroke-width:1px,color:#000000;
-```
+![](/img/post/20250522/2.png)
 
 *   **LLM (大脑)**：作为Agent的核心，负责理解用户指令、进行常识推理、制定计划、甚至生成行动指令。
 *   **工具使用 (Tool Use)**：Agent可以被赋予使用各种外部工具的能力，例如搜索引擎、计算器、代码解释器、API接口等。这使得Agent能够获取LLM本身不具备的信息或执行LLM无法完成的操作。
@@ -207,71 +154,8 @@ LLM、RAG和Agent三者之间存在着密切且层层递进的关系：
     *   **RAG for Agent**: RAG可以作为Agent获取外部知识的一种重要工具。当Agent需要回答基于特定文档的问题，或者需要获取LLM训练数据之外的最新信息时，它可以调用RAG系统来检索相关内容，并将这些内容用于后续的思考和行动。
 
 LLM, RAG, Agent 关系示意图:
-```mermaid
-graph TD
-    subgraph Agent [智能体 (Agent)]
-        direction TB
-        A_Planning[规划与决策模块]
-        A_Memory[记忆模块]
-        
-        subgraph CoreBrain [核心大脑]
-            direction TB
-            A_LLM[LLM 核心]
-            A_RAG[RAG 组件: 检索与增强]
-            A_KB((外部知识库))
-            
-            A_LLM --> A_RAG;
-            A_RAG -- 访问 --> A_KB;
-        end
-        
-        A_ToolUse[工具使用模块];
 
-        CoreBrain --> A_Planning;
-        A_Planning --> A_Memory;
-        A_Planning --> A_ToolUse;
-        A_ToolUse --> A_Action[执行动作/输出];
-        A_Memory --> CoreBrain;
-
-        subgraph Tools_Examples [工具示例]
-            direction LR
-            Tool1[代码解释器];
-            Tool2[API 调用];
-            Tool_etc[其他...];
-        end
-        A_ToolUse -.-> Tools_Examples;
-    end
-
-    subgraph Standalone_RAG [独立的 RAG 系统 (增强LLM)]
-        direction TB
-        R_LLM_Instance[LLM 实例]
-        R_Retriever[检索器]
-        R_KB_Instance((外部知识库))
-        R_AugPrompt[增强提示模块]
-
-        R_Retriever -- 从 --> R_KB_Instance;
-        R_Retriever -- 检索内容 --> R_AugPrompt;
-        R_LLM_Instance -- 原始查询 --> R_AugPrompt;
-        R_AugPrompt --> R_LLM_Instance;
-    end
-    
-    subgraph Base_LLM [基础 LLM]
-        LLM_Only[LLM (语言理解/生成)];
-    end
-
-    classDef agent_style fill:#e6f3ff,stroke:#007bff,stroke-width:2px,color:#000;
-    classDef rag_style fill:#e6ffe6,stroke:#28a745,stroke-width:2px,color:#000;
-    classDef llm_style fill:#fff0e6,stroke:#ff7f0e,stroke-width:2px,color:#000;
-    classDef tool_style fill:#f0f0f0,stroke:#555,stroke-width:1px,color:#000;
-
-    class Agent,A_Planning,A_Memory,A_ToolUse,A_Action,CoreBrain,A_LLM,A_RAG,A_KB agent_style;
-    class Standalone_RAG,R_LLM_Instance,R_Retriever,R_KB_Instance,R_AugPrompt rag_style;
-    class Base_LLM,LLM_Only llm_style;
-    class Tools_Examples,Tool1,Tool2,Tool_etc tool_style;
-    
-    note "LLM 是核心的语言处理单元。" right of Base_LLM
-    note "RAG 通过从外部知识库检索信息来增强 LLM。" right of Standalone_RAG
-    note "Agent 利用 LLM (通常是 RAG 增强的) 作为其大脑，并结合规划、记忆和工具使用来完成复杂任务。" right of Agent
-```
+![](/img/post/20250522/3.png)
 
 ### 协同工作
 
