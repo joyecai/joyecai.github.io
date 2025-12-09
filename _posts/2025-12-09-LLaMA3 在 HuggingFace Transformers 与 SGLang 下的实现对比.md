@@ -97,13 +97,13 @@ print(response)
 
 SGLang 既可以作为服务启动，也可以像 Python 库一样使用。
 
-**命令行启动服务：**
+命令行启动服务：
 
 ```bash
 python -m sglang.launch_server --model-path meta-llama/Meta-Llama-3-8B-Instruct --port 30000
 ```
 
-**Python 客户端调用：**
+Python 客户端调用：
 
 ```python
 import sglang as sgl
@@ -160,8 +160,11 @@ class RadixCache:
 
     def match_prefix(self, token_ids):
         # 核心逻辑：在树中寻找最长匹配前缀
+
         # 遍历 Radix Tree，匹配 token_ids
+
         # 如果命中，返回命中的节点和缓存的 KV indices
+
         node = self.root_node
         for token in token_ids:
             if token in node.children:
@@ -172,7 +175,9 @@ class RadixCache:
 
     def insert(self, new_token_ids, new_kv_indices):
         # 将新的推理结果插入树中，供下次复用
+
         # SGLang 会根据 LRU 策略定期驱逐冷数据
+
         pass
 ```
 
@@ -191,20 +196,28 @@ class RadixCache:
 class MultiHeadLatentAttention(nn.Module):
     def forward(self, q, k, v):
         # MLA 的核心在于将 KV 压缩到低维 Latent Space
+
         # SGLang 在 Kernel 层面做了极致优化，这里展示逻辑流
-        
+
+
         # 1. 权重吸收 (Weight Absorption)
+
         # 将原始的 W_Q, W_K, W_V 融合，减少计算时的显存搬运
+
         q_latent = self.q_down_proj(q)
         kv_latent = self.kv_down_proj(k) # KV 联合压缩
         
         # 2. 在 Latent Space 进行 RoPE (旋转位置编码)
+
         # 避免了在完整 Head 维度上做 RoPE 的巨大开销
+
         q_rope = apply_rope(q_latent)
         k_rope = apply_rope(kv_latent)
         
         # 3. 投影回原始空间进行 Attention 或直接使用 FlashInfer 的 MLA Kernel
+
         # SGLang 调用优化的 Custom Op
+
         output = flashinfer.mla_decode(q_rope, k_rope, ...)
         return output
 ```
@@ -225,15 +238,21 @@ SGLang 实现了 **Compressed Finite State Machine (FSM)**：
 class RegexLogitsProcessor:
     def __init__(self, regex_string):
         # 1. 离线编译：将正则字符串转换为有限状态机 (FSM)
+
         self.fsm = regex_to_fsm(regex_string)
         # 2. 压缩：合并线性路径，减少状态跳转开销
+
         self.compressed_fsm = compress_fsm(self.fsm)
 
     def __call__(self, input_ids, scores):
         # 3. 运行时：直接在 GPU Kernel 中根据当前状态 Mask 掉非法 Token
+
         # SGLang 将 FSM 状态表下沉到了 CUDA
+
         # mask = sgl_kernel.fsm_mask(self.compressed_fsm, current_state)
+
         # scores += mask
+
         return scores
 ```
 
@@ -258,15 +277,21 @@ def run_scheduler_loop():
         # SGLang 的 Loop 不止处理当前，还预取下一步
         
         # 1. 下发当前 Batch 到 GPU 执行 (Async)
+
         current_batch.execute_on_gpu()
         
         # 2. "Zero-Overhead" 的核心：
+
         # 在 GPU 忙碌时，CPU 立即开始计算**下一个** Batch 的调度计划
+
         # (包括 RadixCache 匹配、Token 预处理、显存分配)
+
         next_batch_plan = scheduler.schedule_next_batch()
         
         # 3. 准备好数据，等待 GPU 完成上一轮，无缝衔接
+
         # synchronize() # 仅在必要时同步
+
 ```
 
 #### 缓存感知负载均衡器 (Cache-Aware Load Balancer)
@@ -289,8 +314,10 @@ class CacheAwareRouter:
         max_overlap = 0
         
         # 遍历所有 Worker，寻找拥有请求中最长共享前缀的那个
+
         for worker in self.workers:
             # Router 维护了近似的 Radix Tree 状态
+
             overlap_len = tree_cache_status[worker].match_len(request.prompt_ids)
             
             if overlap_len > max_overlap:
@@ -298,6 +325,7 @@ class CacheAwareRouter:
                 best_worker = worker
         
         # 将请求路由到命中率最高的 Worker
+        
         return best_worker.send(request)
 ```
 
