@@ -150,8 +150,6 @@ SGLang 引入了 **RadixAttention**，将 KV Cache 管理为一棵基数树（Ra
 
 **关键代码实现 (SGLang RadixCache 核心逻辑简化)：**
 
-> 源码路径: [`sglang/python/sglang/srt/mem_cache/radix_cache.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/mem_cache/radix_cache.py)
-
 ```python
 class RadixCache:
     def __init__(self):
@@ -181,6 +179,8 @@ class RadixCache:
         pass
 ```
 
+> 源码路径: [`sglang/python/sglang/srt/mem_cache/radix_cache.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/mem_cache/radix_cache.py)
+
 #### 多头潜在注意力 (MLA): DeepSeek 系列的高效引擎
 
 针对 DeepSeek-V2/V3 等模型引入的 Multi-Head Latent Attention (MLA) 机制，SGLang 进行了深度优化。相比于传统的 GQA，MLA 通过低秩投影大大压缩了 KV Cache 的显存占用，但也带来了更复杂的计算模式。
@@ -189,8 +189,6 @@ class RadixCache:
 *   **收益**：在 DeepSeek 系列模型上，由于 MLA 的优化，显存占用显著降低，使得单卡可以运行更大参数或更长 Context 的模型，同时保持极高的吞吐量。
 
 **关键代码实现 (MLA 权重吸收与投影逻辑)：**
-
-> 源码路径: [`sglang/python/sglang/srt/models/deepseek_v2.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/models/deepseek_v2.py)
 
 ```python
 class MultiHeadLatentAttention(nn.Module):
@@ -222,6 +220,8 @@ class MultiHeadLatentAttention(nn.Module):
         return output
 ```
 
+> 源码路径: [`sglang/python/sglang/srt/models/deepseek_v2.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/models/deepseek_v2.py)
+
 #### 压缩有限状态机: 零开销结构化输出
 
 对于 JSON 限制生成，HuggingFace 通常需要借助 `outlines` 或 `guidance` 等外挂库，这些库往往通过 Mask Logits 来实现，过程可能相当慢。
@@ -231,8 +231,6 @@ SGLang 实现了 **Compressed Finite State Machine (FSM)**：
 *   **收益**：相比于 Python 层面的 Logits Masking，几乎实现了零额外开销的结构化生成。
 
 **关键代码实现 (Regex 到 FSM 的编译与 Masking)：**
-
-> 源码路径: [`outlines/outlines/generate/regex.py`](https://github.com/dottxt-ai/outlines/blob/main/outlines/generate/regex.py) (SGLang 依赖 Outlines 实现)
 
 ```python
 class RegexLogitsProcessor:
@@ -256,6 +254,8 @@ class RegexLogitsProcessor:
         return scores
 ```
 
+> 源码路径: [`outlines/outlines/generate/regex.py`](https://github.com/dottxt-ai/outlines/blob/main/outlines/generate/regex.py) (SGLang 依赖 Outlines 实现)
+
 ### 核心工程改进
 
 SGLang 不仅在算法层面创新，在系统工程层面也引入了类似 "操作系统" 的调度能力。
@@ -268,8 +268,6 @@ SGLang 不仅在算法层面创新，在系统工程层面也引入了类似 "�
 *   **收益**：消灭了 GPU 的空闲气泡，在高并发场景下，GPU 利用率几乎可以打满 100%。
 
 **关键代码实现 (Pipeline 调度逻辑)：**
-
-> 源码路径: [`sglang/python/sglang/srt/managers/scheduler.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/managers/scheduler.py)
 
 ```python
 def run_scheduler_loop():
@@ -294,6 +292,8 @@ def run_scheduler_loop():
 
 ```
 
+> 源码路径: [`sglang/python/sglang/srt/managers/scheduler.py`](https://github.com/sgl-project/sglang/blob/main/python/sglang/srt/managers/scheduler.py)
+
 #### 缓存感知负载均衡器 (Cache-Aware Load Balancer)
 
 在多实例部署（Data Parallelism）场景下，传统的负载均衡器（如 Round-Robin）是无状态的，可能将需要相同前缀的请求分发到不同实例，导致 RadixAttention 失效。
@@ -302,8 +302,6 @@ def run_scheduler_loop():
 *   **收益**：显著提高了分布式环境下的 KV Cache 命中率，减少了不必要的 Prefill 计算，大幅降低端到端延迟。
 
 **关键代码实现 (Router 分发逻辑)：**
-
-> 源码路径: [`sglang/sgl-router/py_src/sglang_router/launch_router.py`](https://github.com/sgl-project/sglang/blob/main/sgl-router/py_src/sglang_router/launch_router.py)
 
 ```python
 class CacheAwareRouter:
@@ -325,8 +323,8 @@ class CacheAwareRouter:
                 best_worker = worker
         
         # 将请求路由到命中率最高的 Worker
-        
+
         return best_worker.send(request)
 ```
 
-
+> 源码路径: [`sglang/sgl-router/py_src/sglang_router/launch_router.py`](https://github.com/sgl-project/sglang/blob/main/sgl-router/py_src/sglang_router/launch_router.py)
