@@ -1,228 +1,144 @@
 ---
 layout: null
 title: "SQL美化"
-description: "SQL语句排版美化（带高亮）"
+description: "SQL语句排版美化（带基础语法校验与高亮）"
 ---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>SQL 美化</title>
+    <title>SQL美化</title>
     <style>
         :root {
-            --bg-color: #f5f7f9;
-            --panel-bg: #ffffff;
-            --editor-bg: #1e1e1e;
-            --text-main: #333;
-            --key-color: #569cd6;
-            --str-color: #ce9178;
-            --num-color: #b5cea8;
-            --func-color: #dcdcaa;
-            --comm-color: #6a9955;
+            --bg: #1e1e1e;
+            --panel: #252526;
+            --err-color: #f44336;
+            --warn-color: #ff9800;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            padding: 15px 25px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .container {
-            display: flex;
-            flex: 1;
-            padding: 20px;
-            gap: 20px;
-            overflow: hidden;
-        }
-
-        .panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--panel-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .panel-header {
-            padding: 10px 15px;
-            background: #eee;
-            font-size: 12px;
-            font-weight: bold;
-            color: #666;
-            text-transform: uppercase;
-        }
-
-        textarea, .highlight-area {
-            flex: 1;
-            width: 100%;
-            border: none;
-            padding: 15px;
-            font-family: "Consolas", "Monaco", monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            box-sizing: border-box;
-            outline: none;
-            overflow: auto;
-            white-space: pre;
-        }
-
-        textarea {
-            background: #252526;
-            color: #d4d4d4;
-            resize: none;
-        }
-
-        .highlight-area {
-            background: var(--editor-bg);
-            color: #d4d4d4;
-        }
-
-        /* 语法高亮样式 */
-        .hl-key { color: var(--key-color); font-weight: bold; }
-        .hl-str { color: var(--str-color); }
-        .hl-num { color: var(--num-color); }
-        .hl-func { color: var(--func-color); }
-        .hl-comm { color: var(--comm-color); }
-
-        .btn {
-            background: #007acc;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn:hover { background: #005fa3; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #f0f2f5; }
+        header { background: #fff; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 20px; }
+        .main { display: flex; flex: 1; padding: 20px; gap: 15px; overflow: hidden; }
+        .column { flex: 1; display: flex; flex-direction: column; background: var(--panel); border-radius: 8px; position: relative; }
+        .label { padding: 8px 15px; color: #aaa; font-size: 11px; font-weight: bold; border-bottom: 1px solid #333; }
+        textarea, .display { flex: 1; border: none; padding: 15px; font-family: 'Consolas', monospace; font-size: 14px; line-height: 1.6; outline: none; overflow-y: auto; color: #d4d4d4; }
+        textarea { background: transparent; resize: none; }
+        .display { white-space: pre-wrap; background: var(--bg); }
+        
+        /* 错误提示 */
+        .error-overlay { background: #fffbe6; border-left: 4px solid var(--warn-color); padding: 10px; font-size: 13px; color: #856404; margin: 0 20px 20px; border-radius: 4px; display: none; }
+        .error-overlay.active { display: block; }
+        .err-underline { text-decoration: underline wavy var(--err-color); color: var(--err-color); font-weight: bold; }
+        
+        /* 高亮 */
+        .hl-key { color: #569cd6; font-weight: bold; }
+        .hl-str { color: #ce9178; }
+        .hl-num { color: #b5cea8; }
+        .hl-err { background: rgba(244, 67, 54, 0.3); border-bottom: 2px dotted red; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-size: 18px; font-weight: bold;">🧩 SQL 美化</div>
-    <button class="btn" onclick="processSql()">立即美化</button>
+    <h2 style="margin:0; font-size: 18px;">🧩 SQL美化</h2>
+    <div id="status-tag" style="font-size: 12px; color: #666;">状态: 等待输入...</div>
 </header>
 
-<div class="container">
-    <div class="panel">
-        <div class="panel-header">输入原始 SQL</div>
-        <textarea id="inputSql" placeholder="在此输入 SQL，例如：select * from users where id=1"></textarea>
+<div class="main">
+    <div class="column">
+        <div class="label">输入原始 SQL (支持自动检测错误)</div>
+        <textarea id="input" placeholder="输入 SQL... 试试输入中文逗号，或者少写一个括号"></textarea>
     </div>
-    <div class="panel">
-        <div class="panel-header">高亮结果</div>
-        <div id="outputSql" class="highlight-area"></div>
+    <div class="column">
+        <div class="label">校验结果与标注</div>
+        <div id="output" class="display"></div>
     </div>
 </div>
 
+<div id="error-box" class="error-overlay"></div>
+
 <script>
-    /**
-     * 核心逻辑：SQL 格式化算法
-     */
-    function formatSQL(sql) {
-        // 1. 基本清理
-        sql = sql.replace(/\s+/g, ' ').trim();
-        
-        // 2. 定义关键字换行规律
-        const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET'];
-        
-        let indent = 0;
-        let result = "";
-        
-        // 将关键字转为大写并前后加占位符
-        let words = sql.split(' ');
-        
-        words.forEach((word) => {
-            let upWord = word.toUpperCase();
-            if (keywords.includes(upWord)) {
-                result += "\n" + upWord + " ";
-            } else if (word.includes(',')) {
-                result += word.replace(',', ',\n    ');
-            } else {
-                result += word + " ";
-            }
-        });
+    const inputEl = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const errorBox = document.getElementById('error-box');
+    const statusTag = document.getElementById('status-tag');
 
-        return result.trim();
-    }
-
-    /**
-     * 核心逻辑：正则语法高亮
-     */
-    function highlightSQL(sql) {
-        if (!sql) return "";
-
-        // 转义 HTML 字符防止注入
-        let html = sql.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-        // 正则规则
-        const rules = [
-            { reg: /\b(SELECT|FROM|WHERE|AND|OR|GROUP BY|ORDER BY|LIMIT|JOIN|LEFT|RIGHT|INNER|ON|AS|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|DATABASE|DROP|ALTER|PRIMARY KEY|DISTINCT|UNION|ALL)\b/gi, cls: 'hl-key' },
-            { reg: /\b(COUNT|SUM|AVG|MIN|MAX|NOW|DATE_FORMAT|CONCAT|IFNULL|COALESCE)\b/gi, cls: 'hl-func' },
-            { reg: /('.*?'|".*?")/g, cls: 'hl-str' },
-            { reg: /\b(\d+)\b/g, cls: 'hl-num' },
-            { reg: /(--.*$|\/\*[\s\S]*?\*\/)/gm, cls: 'hl-comm' }
-        ];
-
-        // 占位替换避免冲突
-        let parts = [];
-        rules.forEach((rule, idx) => {
-            html = html.replace(rule.reg, (match) => {
-                const placeholder = `__PH_${idx}_${parts.length}__`;
-                parts.push(`<span class="${rule.cls}">${match.toUpperCase()}</span>`);
-                return placeholder;
-            });
-        });
-
-        // 还原占位符
-        rules.forEach((rule, idx) => {
-            parts.forEach((content, pIdx) => {
-                const placeholder = `__PH_${idx}_${pIdx}__`;
-                html = html.replace(placeholder, content);
-            });
-        });
-
-        return html;
-    }
-
-    function processSql() {
-        const input = document.getElementById('inputSql').value;
-        if (!input) {
-            document.getElementById('outputSql').innerHTML = "";
+    function validateAndFormat() {
+        let sql = inputEl.value;
+        if (!sql) {
+            outputEl.innerHTML = "";
+            errorBox.classList.remove('active');
             return;
         }
-        
-        // 1. 格式化
-        const formatted = formatSQL(input);
-        // 2. 高亮渲染
-        const highlighted = highlightSQL(formatted);
-        
-        document.getElementById('outputSql').innerHTML = highlighted;
+
+        let errors = [];
+        let html = sql;
+
+        // 1. 检查中文字符（非法字符检测）
+        const chineseChars = /[，。；（）“”]/g;
+        if (chineseChars.test(sql)) {
+            errors.push("检测到中文标点符号（如 ， 或 ；），请切换为英文输入法。");
+            html = html.replace(chineseChars, match => `<span class="err-underline">${match}</span>`);
+        }
+
+        // 2. 括号匹配检查
+        let stack = [];
+        for (let i = 0; i < sql.length; i++) {
+            if (sql[i] === '(') stack.push(i);
+            else if (sql[i] === ')') {
+                if (stack.length === 0) errors.push("检测到多余的右括号 ')'");
+                else stack.pop();
+            }
+        }
+        if (stack.length > 0) errors.push(`检测到 ${stack.length} 个未闭合的左括号 '('`);
+
+        // 3. 引号闭合检查
+        const singleQuotes = (sql.match(/'/g) || []).length;
+        if (singleQuotes % 2 !== 0) errors.push("单引号 ' 未正确闭合");
+
+        // 4. 悬空操作符检查
+        if (/\b(AND|OR|WHERE|SELECT|,)\s*$/i.test(sql.trim())) {
+            errors.push("语句似乎未完成，不能以操作符或逗号结尾");
+        }
+
+        // 执行美化展示
+        renderResult(sql, errors);
     }
 
-    // 监听键盘事件，实现简易实时预览
-    document.getElementById('inputSql').addEventListener('input', function() {
-        processSql();
-    });
+    function renderResult(rawSql, errors) {
+        // 简单的美化：关键字换行 + 大写
+        const keywords = /\b(SELECT|FROM|WHERE|AND|OR|GROUP BY|ORDER BY|JOIN|INSERT|UPDATE|SET)\b/gi;
+        
+        let formatted = rawSql.replace(keywords, (m) => "\n" + m.toUpperCase() + " ");
+        
+        // 语法高亮
+        let highlighted = formatted
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(keywords, '<span class="hl-key">$1</span>')
+            .replace(/('.*?')/g, '<span class="hl-str">$1</span>')
+            .replace(/\b(\d+)\b/g, '<span class="hl-num">$1</span>')
+            // 特殊处理错误标注
+            .replace(/[，。；（）“”]/g, '<span class="err-underline">$&</span>');
 
-    // 默认初始化
-    document.getElementById('inputSql').value = "select id, name, score from students where score > 90 and class_id = 1 order by score desc";
-    processSql();
+        outputEl.innerHTML = highlighted.trim();
+
+        // 更新错误提示框
+        if (errors.length > 0) {
+            statusTag.innerHTML = `⚠️ 发现 ${errors.length} 个潜在问题`;
+            statusTag.style.color = "red";
+            errorBox.innerHTML = "<strong>修改建议：</strong><br/>• " + errors.join("<br/>• ");
+            errorBox.classList.add('active');
+        } else {
+            statusTag.innerHTML = "✅ 语法解析正常";
+            statusTag.style.color = "green";
+            errorBox.classList.remove('active');
+        }
+    }
+
+    inputEl.addEventListener('input', validateAndFormat);
+
+    // 预设一个错误的例子
+    inputEl.value = "SELECT id，name FROM users WHERE id = 1 AND (status = 'active'";
+    validateAndFormat();
 </script>
 
 </body>
