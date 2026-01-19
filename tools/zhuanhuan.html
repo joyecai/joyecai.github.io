@@ -1,0 +1,104 @@
+---
+layout: null
+title: "文件大小单位转换器"
+description: "在线文件大小(bit,bytes,KB,MB,GB,TB)转换换算"
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件大小单位转换器</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .converter-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #666; font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.3s; }
+        input:focus { outline: none; border-color: #007bff; background: #fcfdfe; }
+        .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="converter-card">
+    <h2>🧩 文件大小单位转换器</h2>
+    <div class="unit-grid">
+        <div class="input-group">
+            <label>比特 (bit)</label>
+            <input type="number" id="bit" placeholder="0" oninput="convert(this)">
+        </div>
+        <div class="input-group">
+            <label>字节 (Bytes)</label>
+            <input type="number" id="bytes" placeholder="0" oninput="convert(this)">
+        </div>
+        <div class="input-group">
+            <label>千字节 (KB)</label>
+            <input type="number" id="kb" placeholder="0" oninput="convert(this)">
+        </div>
+        <div class="input-group">
+            <label>兆字节 (MB)</label>
+            <input type="number" id="mb" placeholder="0" oninput="convert(this)">
+        </div>
+        <div class="input-group">
+            <label>吉字节 (GB)</label>
+            <input type="number" id="gb" placeholder="0" oninput="convert(this)">
+        </div>
+        <div class="input-group">
+            <label>太字节 (TB)</label>
+            <input type="number" id="tb" placeholder="0" oninput="convert(this)">
+        </div>
+    </div>
+</div>
+
+<script>
+    function convert(element) {
+        const val = parseFloat(element.value);
+        const id = element.id;
+
+        if (isNaN(val)) {
+            clearAll();
+            return;
+        }
+
+        // 统一转换为基本单位: Bytes (注：1 Byte = 8 bits)
+        let bytes;
+        switch(id) {
+            case 'bit':   bytes = val / 8; break;
+            case 'bytes': bytes = val; break;
+            case 'kb':    bytes = val * 1024; break;
+            case 'mb':    bytes = val * Math.pow(1024, 2); break;
+            case 'gb':    bytes = val * Math.pow(1024, 3); break;
+            case 'tb':    bytes = val * Math.pow(1024, 4); break;
+        }
+
+        // 更新所有输入框（排除当前正在输入的框以防抖动）
+        updateValue('bit', bytes * 8, id);
+        updateValue('bytes', bytes, id);
+        updateValue('kb', bytes / 1024, id);
+        updateValue('mb', bytes / Math.pow(1024, 2), id);
+        updateValue('gb', bytes / Math.pow(1024, 3), id);
+        updateValue('tb', bytes / Math.pow(1024, 4), id);
+    }
+
+    function updateValue(id, value, currentId) {
+        if (id !== currentId) {
+            // 使用 toExponential 或 toFixed 处理极小或极大的数值
+            const el = document.getElementById(id);
+            if (value === 0) el.value = "";
+            else if (value < 0.000001 || value > 1000000000000) {
+                el.value = value.toExponential(4);
+            } else {
+                el.value = parseFloat(value.toFixed(8));
+            }
+        }
+    }
+
+    function clearAll() {
+        document.querySelectorAll('input').forEach(input => input.value = "");
+    }
+</script>
+
+</body>
+</html>
