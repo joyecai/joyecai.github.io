@@ -7,121 +7,223 @@ description: "SQL语句排版美化（带高亮）"
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL美化</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/sql-formatter@15.3.1/dist/sql-formatter.min.js"></script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
-
+    <title>SQL 美化</title>
     <style>
-        code[class*="language-"], pre[class*="language-"] {
-            font-family: 'Fira Code', 'Consolas', monospace !important;
-            font-size: 14px;
-            margin: 0 !important;
-            height: 100%;
+        :root {
+            --bg-color: #f5f7f9;
+            --panel-bg: #ffffff;
+            --editor-bg: #1e1e1e;
+            --text-main: #333;
+            --key-color: #569cd6;
+            --str-color: #ce9178;
+            --num-color: #b5cea8;
+            --func-color: #dcdcaa;
+            --comm-color: #6a9955;
         }
-        .editor-container { height: calc(100vh - 220px); }
-        /* 隐藏 Prism 默认背景，统一风格 */
-        pre[class*="language-"] { background: #1a202c !important; } 
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            padding: 15px 25px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 10px 15px;
+            background: #eee;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        textarea, .highlight-area {
+            flex: 1;
+            width: 100%;
+            border: none;
+            padding: 15px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            box-sizing: border-box;
+            outline: none;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        textarea {
+            background: #252526;
+            color: #d4d4d4;
+            resize: none;
+        }
+
+        .highlight-area {
+            background: var(--editor-bg);
+            color: #d4d4d4;
+        }
+
+        /* 语法高亮样式 */
+        .hl-key { color: var(--key-color); font-weight: bold; }
+        .hl-str { color: var(--str-color); }
+        .hl-num { color: var(--num-color); }
+        .hl-func { color: var(--func-color); }
+        .hl-comm { color: var(--comm-color); }
+
+        .btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover { background: #005fa3; }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div id="app" class="container mx-auto p-4 md:p-8">
-        <header class="flex justify-between items-center mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">🧩 SQL美化<span class="text-blue-600">PRO</span></h1>
-            </div>
-            <div class="space-x-2">
-                <button @click="copyToClipboard" class="bg-white border border-gray-300 hover:bg-gray-50 px-4 py-2 rounded shadow-sm text-sm font-medium transition">
-                    复制结果
-                </button>
-            </div>
-        </header>
+<body>
 
-        <div class="bg-white p-4 rounded-t-xl border-b flex gap-6 items-center shadow-sm">
-            <div class="flex items-center">
-                <label class="text-xs uppercase tracking-wider font-bold text-gray-500 mr-3">方言</label>
-                <select v-model="config.language" class="border rounded bg-gray-50 px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="sql">Standard SQL</option>
-                    <option value="mysql">MySQL</option>
-                    <option value="postgresql">PostgreSQL</option>
-                </select>
-            </div>
-            <div class="flex items-center">
-                <input type="checkbox" v-model="config.uppercase" id="upper" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <label for="upper" class="ml-2 text-sm text-gray-600 cursor-pointer">大写关键字</label>
-            </div>
-        </div>
+<header>
+    <div style="font-size: 18px; font-weight: bold;">🧩 SQL 美化</div>
+    <button class="btn" onclick="processSql()">立即美化</button>
+</header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 editor-container shadow-2xl rounded-b-xl overflow-hidden">
-            <div class="relative bg-gray-900 border-r border-gray-700">
-                <div class="absolute top-2 left-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest z-10">Input</div>
-                <textarea 
-                    v-model="rawInput" 
-                    class="w-full h-full p-8 pt-10 bg-transparent text-blue-300 outline-none resize-none font-mono text-sm leading-relaxed"
-                    placeholder="在此粘贴你的原始 SQL..."
-                ></textarea>
-            </div>
-
-            <div class="relative bg-[#1a202c]">
-                <div class="absolute top-2 left-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest z-10">Formatted & Highlighted</div>
-                <div class="h-full overflow-auto pt-10 px-4">
-                    <pre><code ref="codeBlock" class="language-sql">{{ formattedSql }}</code></pre>
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <div class="panel">
+        <div class="panel-header">输入原始 SQL</div>
+        <textarea id="inputSql" placeholder="在此输入 SQL，例如：select * from users where id=1"></textarea>
     </div>
+    <div class="panel">
+        <div class="panel-header">高亮结果</div>
+        <div id="outputSql" class="highlight-area"></div>
+    </div>
+</div>
 
-    <script>
-        const { createApp, ref, computed, watch, nextTick } = Vue;
-
-        createApp({
-            setup() {
-                const rawInput = ref("select id, name, created_at from users where status = 'active' and id in (1,2,3) order by created_at desc;");
-                const codeBlock = ref(null);
-                const config = ref({
-                    language: 'mysql',
-                    uppercase: true
-                });
-
-                // 美化逻辑
-                const formattedSql = computed(() => {
-                    try {
-                        return window.sqlFormatter.format(rawInput.value, {
-                            language: config.value.language,
-                            uppercase: config.value.uppercase,
-                        });
-                    } catch (e) {
-                        return rawInput.value;
-                    }
-                });
-
-                // 核心：监听结果变化，触发 Prism 高亮重绘
-                watch([formattedSql, () => config.value.language], async () => {
-                    await nextTick(); // 等待 Vue 更新 DOM
-                    if (codeBlock.value) {
-                        Prism.highlightElement(codeBlock.value);
-                    }
-                }, { immediate: true });
-
-                const copyToClipboard = () => {
-                    navigator.clipboard.writeText(formattedSql.value);
-                    alert("已复制美化后的代码！");
-                };
-
-                return {
-                    rawInput,
-                    config,
-                    formattedSql,
-                    codeBlock,
-                    copyToClipboard
-                };
+<script>
+    /**
+     * 核心逻辑：SQL 格式化算法
+     */
+    function formatSQL(sql) {
+        // 1. 基本清理
+        sql = sql.replace(/\s+/g, ' ').trim();
+        
+        // 2. 定义关键字换行规律
+        const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'ON', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET'];
+        
+        let indent = 0;
+        let result = "";
+        
+        // 将关键字转为大写并前后加占位符
+        let words = sql.split(' ');
+        
+        words.forEach((word) => {
+            let upWord = word.toUpperCase();
+            if (keywords.includes(upWord)) {
+                result += "\n" + upWord + " ";
+            } else if (word.includes(',')) {
+                result += word.replace(',', ',\n    ');
+            } else {
+                result += word + " ";
             }
-        }).mount('#app');
-    </script>
+        });
+
+        return result.trim();
+    }
+
+    /**
+     * 核心逻辑：正则语法高亮
+     */
+    function highlightSQL(sql) {
+        if (!sql) return "";
+
+        // 转义 HTML 字符防止注入
+        let html = sql.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        // 正则规则
+        const rules = [
+            { reg: /\b(SELECT|FROM|WHERE|AND|OR|GROUP BY|ORDER BY|LIMIT|JOIN|LEFT|RIGHT|INNER|ON|AS|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|DATABASE|DROP|ALTER|PRIMARY KEY|DISTINCT|UNION|ALL)\b/gi, cls: 'hl-key' },
+            { reg: /\b(COUNT|SUM|AVG|MIN|MAX|NOW|DATE_FORMAT|CONCAT|IFNULL|COALESCE)\b/gi, cls: 'hl-func' },
+            { reg: /('.*?'|".*?")/g, cls: 'hl-str' },
+            { reg: /\b(\d+)\b/g, cls: 'hl-num' },
+            { reg: /(--.*$|\/\*[\s\S]*?\*\/)/gm, cls: 'hl-comm' }
+        ];
+
+        // 占位替换避免冲突
+        let parts = [];
+        rules.forEach((rule, idx) => {
+            html = html.replace(rule.reg, (match) => {
+                const placeholder = `__PH_${idx}_${parts.length}__`;
+                parts.push(`<span class="${rule.cls}">${match.toUpperCase()}</span>`);
+                return placeholder;
+            });
+        });
+
+        // 还原占位符
+        rules.forEach((rule, idx) => {
+            parts.forEach((content, pIdx) => {
+                const placeholder = `__PH_${idx}_${pIdx}__`;
+                html = html.replace(placeholder, content);
+            });
+        });
+
+        return html;
+    }
+
+    function processSql() {
+        const input = document.getElementById('inputSql').value;
+        if (!input) {
+            document.getElementById('outputSql').innerHTML = "";
+            return;
+        }
+        
+        // 1. 格式化
+        const formatted = formatSQL(input);
+        // 2. 高亮渲染
+        const highlighted = highlightSQL(formatted);
+        
+        document.getElementById('outputSql').innerHTML = highlighted;
+    }
+
+    // 监听键盘事件，实现简易实时预览
+    document.getElementById('inputSql').addEventListener('input', function() {
+        processSql();
+    });
+
+    // 默认初始化
+    document.getElementById('inputSql').value = "select id, name, score from students where score > 90 and class_id = 1 order by score desc";
+    processSql();
+</script>
+
 </body>
 </html>
