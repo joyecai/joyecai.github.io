@@ -1,0 +1,272 @@
+---
+layout: null
+title: "美食摇摇乐"
+description: "早上/中午/晚上吃什么，摇一摇就知道！"
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食摇摇乐</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            --btn-gradient: linear-gradient(to right, #ff416c, #ff4b2b);
+            --accent-color: #6c5ce7;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'PingFang SC', "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2 { color: #2d3436; margin-bottom: 30px; letter-spacing: 2px; }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        select {
+            padding: 12px; border-radius: 12px; border: 2px solid #dfe6e9;
+            background: white; font-size: 15px; outline: none; cursor: pointer;
+        }
+
+        .main-btn {
+            grid-column: span 2; padding: 18px; background: var(--btn-gradient);
+            color: white; border: none; border-radius: 15px; font-weight: bold;
+            font-size: 18px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+        }
+        .main-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 65, 108, 0.6); }
+
+        .candidates-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            margin: 25px 0; display: none;
+        }
+        .food-item {
+            padding: 15px 5px; background: white; border: 2px solid #f1f2f6;
+            border-radius: 15px; font-size: 14px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #636e72;
+        }
+        .food-item.active {
+            border-color: #ff4757; background: #fffaf0;
+            transform: scale(1.15); font-weight: bold; color: #ff4757;
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
+        }
+
+        .dice-area { margin: 50px 0; display: none; }
+        .scene { width: 80px; height: 80px; margin: 0 auto; perspective: 1000px; cursor: pointer; }
+        .dice {
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+            transition: transform 2s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+
+        .face {
+            position: absolute; width: 80px; height: 80px; background: white;
+            border: 2px solid #eee; border-radius: 15px; display: grid;
+            grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 8px; box-sizing: border-box;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        }
+        .dot { background: #2d3436; border-radius: 50%; width: 14px; height: 14px; align-self: center; justify-self: center; }
+
+        .f1 { transform: rotateY(0deg) translateZ(40px); }
+        .f2 { transform: rotateY(90deg) translateZ(40px); }
+        .f3 { transform: rotateY(180deg) translateZ(40px); }
+        .f4 { transform: rotateY(-90deg) translateZ(40px); }
+        .f5 { transform: rotateX(90deg) translateZ(40px); }
+        .f6 { transform: rotateX(-90deg) translateZ(40px); }
+
+        #result-box {
+            margin-top: 30px; padding: 25px; border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff9f0 100%);
+            border: 3px solid var(--accent-color);
+            display: none; animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .winner-name { font-size: 28px; color: var(--accent-color); margin-bottom: 20px; font-weight: 900; }
+        .jump-link {
+            display: inline-block; padding: 12px 30px; background: var(--accent-color);
+            color: white; text-decoration: none; border-radius: 30px; font-weight: bold;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            cursor: pointer;
+        }
+        .jump-link.loading { background: #95a5a6; cursor: wait; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🍽️ 美食摇摇乐</h2>
+    
+    <div class="controls">
+        <select id="timeSlot">
+            <option value="br">🌅 早餐时段</option>
+            <option value="lu">🌞 午餐时段</option>
+            <option value="di">🌙 晚餐时段</option>
+        </select>
+        <select id="taste">
+            <option value="cn">🥗 清淡中式</option>
+            <option value="sp">🌶️ 火辣重口</option>
+            <option value="wt">🍕 异域风情</option>
+            <option value="sn">🍟 快乐小吃</option>
+        </select>
+        <button class="main-btn" onclick="initCandidates()">❶ 随机生成 6 种候选</button>
+    </div>
+
+    <div class="candidates-grid" id="grid">
+        <div class="food-item" id="f0">?</div>
+        <div class="food-item" id="f1">?</div>
+        <div class="food-item" id="f2">?</div>
+        <div class="food-item" id="f3">?</div>
+        <div class="food-item" id="f4">?</div>
+        <div class="food-item" id="f5">?</div>
+    </div>
+
+    <div class="dice-area" id="diceArea">
+        <div class="scene" onclick="rollDice()">
+            <div class="dice" id="dice">
+                <div class="face f1"><div class="dot" style="grid-area: 2/2; background: #ff4757; width: 20px; height: 20px;"></div></div>
+                <div class="face f2"><div class="dot" style="grid-area: 1/1"></div><div class="dot" style="grid-area: 3/3"></div></div>
+                <div class="face f3"><div class="dot" style="grid-area: 1/1"></div><div class="dot" style="grid-area: 2/2"></div><div class="dot" style="grid-area: 3/3"></div></div>
+                <div class="face f4"><div class="dot" style="grid-area: 1/1"></div><div class="dot" style="grid-area: 1/3"></div><div class="dot" style="grid-area: 3/1"></div><div class="dot" style="grid-area: 3/3"></div></div>
+                <div class="face f5"><div class="dot" style="grid-area: 1/1"></div><div class="dot" style="grid-area: 1/3"></div><div class="dot" style="grid-area: 2/2"></div><div class="dot" style="grid-area: 3/1"></div><div class="dot" style="grid-area: 3/3"></div></div>
+                <div class="face f6"><div class="dot" style="grid-area: 1/1"></div><div class="dot" style="grid-area: 1/3"></div><div class="dot" style="grid-area: 2/1"></div><div class="dot" style="grid-area: 2/3"></div><div class="dot" style="grid-area: 3/1"></div><div class="dot" style="grid-area: 3/3"></div></div>
+            </div>
+        </div>
+        <p style="margin-top: 20px; font-size: 14px; color: #636e72;">❷ 点击 3D 骰子</p>
+    </div>
+
+    <div id="result-box">
+        <div class="winner-name" id="winnerName"></div>
+        <div class="jump-link" id="winnerBtn" onclick="smartJump()">🔥 智能查看图片素材</div>
+    </div>
+</div>
+
+<script>
+    // 数据库逻辑
+    const foodPool = {
+        br: {
+            cn: ["大排面", "蟹粉小笼", "苏式汤面", "粢饭糕", "糖糕", "豆腐脑", "南瓜粥", "小米糕", "艾草糕", "糯米鸡", "葱油饼", "酱香饼", "鸡蛋灌饼", "韭菜盒子", "白粥配腐乳", "咸鸭蛋", "阳春面", "鲜肉馄饨", "手擀面", "蒸红薯", "玉米棒", "紫薯粥", "山药豆浆", "核桃露", "红枣糕", "发糕", "马蹄糕", "红豆卷", "花卷馒头", "肉包子", "素包子", "奶黄包", "豆沙包", "汤包", "酒酿圆子", "赤豆糊", "绿豆汤", "地瓜粥", "菜粥", "葱油拌面", "蒸饺", "定胜糕", "发糕", "油占饼", "糖火烧", "驴打滚", "艾窝窝", "豌豆黄", "糖耳朵"],
+            sp: ["武汉热干面", "胡辣汤", "宜宾燃面", "重庆小面", "老仓醋米线", "辣油馄饨", "剁椒蒸饺", "麻辣串串", "香辣拌面", "红油抄手", "咖喱牛肉粉", "贵州羊肉粉", "江西拌粉", "香辣手抓饼", "剁椒饭团", "酸汤水饺", "泡椒米线", "辣牛肉汤", "火鸡面", "酸菜肉丝面", "泡椒鸡杂面", "香辣凉面", "麻辣豆腐脑", "辣子鸡丁面", "香辣米线", "辣油馄饨", "剁椒卷饼", "四川凉面", "酸汤肥牛粉", "辣子肉燥面", "咖喱面", "泰式辣面", "麻辣粉丝", "剁椒金针菇面", "香辣牛肉粉丝", "泡椒牛肉粉", "辣干子拌面", "湖南米粉", "干拌香辣面", "辣白菜拉面", "双椒拌面", "辣味锅贴", "老干妈面", "酸汤抄手", "香辣藕片粉", "辣子肥肠面", "麻辣鸭血粉", "辣味馅饼", "爆辣冷面"],
+            wt: ["美式咖啡", "可颂面包", "贝果", "班尼迪克蛋", "欧姆蛋", "华夫饼", "松饼", "希腊酸奶碗", "凯撒沙拉", "全麦吐司", "三明治", "帕尼尼", "法式吐司", "麦片粥", "巧克力马芬", "意式浓缩", "水果捞", "低脂牛奶", "煎培根", "烤香肠", "牛角包", "芝士蛋堡", "煎饼果子(西式)", "烟熏三文鱼贝果", "能量棒谷物", "拿铁", "卡布奇诺", "蓝莓贝果", "法棍三明治", "热狗", "墨西哥塔克", "拿破仑酥", "丹麦卷", "肉桂卷", "甜甜圈", "水果吐司", "火腿芝士卷", "英式司康", "草莓华夫", "金枪鱼帕尼尼", "牛肉贝果", "全麦低脂包", "蓝莓马芬", "英式大早餐", "法式可丽饼", "荷兰松饼", "西班牙油条", "火耳火腿片", "坚果奶昔", "燕麦牛奶杯"],
+            sn: ["便利店饭团", "煮鸡蛋", "香蕉牛奶", "蛋白粉", "能量棒", "苏打饼干", "士力架", "纯牛奶", "吐司片", "坚果包", "龟苓膏", "燕麦片", "酸奶杯", "切片面包", "火腿肠", "海苔饭团", "威化饼", "爆米花", "苹果片", "维他奶", "鸡蛋仔", "鱼蛋", "糯米糍", "老婆饼", "菠萝包", "蛋挞", "咸面包", "芝士条", "辣条", "烤肠", "手抓饼", "鸡肉卷", "墨西哥卷饼", "巧克力棒", "即食燕麦", "压缩饼干", "水果杯", "芝士蛋糕", "牛轧糖", "提子干", "豆奶", "布丁", "爆浆包", "咸蛋黄饼干", "草莓奶昔", "华夫饼干", "薯片", "即食鸡胸肉", "坚果能量棒", "黑咖啡"]
+        },
+        lu: {
+            cn: ["黄焖鸡米饭", "卤肉饭", "番茄炒蛋盖饭", "回锅肉盖饭", "麻婆豆腐饭", "青椒肉丝饭", "地三鲜盖饭", "酸菜鱼米饭", "水煮鱼片", "白斩鸡饭", "红烧排骨饭", "鱼香肉丝饭", "糖醋里脊饭", "宫保鸡丁饭", "土豆炖牛肉饭", "清蒸鲈鱼饭", "狮子头", "家常豆腐", "干煸豆角", "手撕包菜", "梅菜扣肉", "葱烧海参", "香菇滑鸡饭", "烧鸭饭", "叉烧饭", "广式烧腊", "煲仔饭", "扬州炒饭", "福建炒饭", "咖喱牛腩饭", "豉油鸡", "冬菇滑鸡饭", "清炒时蔬", "蒜蓉西兰花", "蚝油生菜", "香菇青菜", "虾仁炒饭", "火腿炒饭", "腊肠炒饭", "海鲜炒饭", "肉丝炒面", "猪肝面", "雪菜肉丝面", "葱油拌面", "本帮熏鱼面", "东坡肉饭", "咸鱼茄子煲", "铁板牛肉", "京酱肉丝", "溜肉段"],
+            sp: ["麻辣香锅", "毛血旺", "湘式小炒肉", "剁椒鱼头", "水煮肉片", "辣子鸡", "尖椒肥肠", "火爆腰花", "泡椒田鸡", "干锅牛蛙", "麻辣烫", "冒菜", "四川火锅", "串串香", "辣味烧烤", "酸辣土豆丝", "麻辣小龙虾", "虎皮尖椒", "香辣肉丝", "口水鸡盖饭", "酸菜鱼", "香辣蟹", "馋嘴蛙", "香辣鸡翅", "水煮牛肉", "水煮鱼", "辣子肥肠", "干锅手撕菜", "麻辣拌", "泡椒牛柳", "尖椒炒肉", "香辣蹄花", "沸腾鱼", "香辣虾", "辣味排骨", "辣子肉丁", "剁椒金针菇", "泡椒凤爪饭", "麻辣牛肉面", "酸汤肥牛", "辣味干锅", "湘味腊肉", "口味蛇", "辣味凉皮", "剁椒皮蛋", "干煸鱿鱼须", "香辣牛筋", "爆炒辣子鸡", "香辣河虾", "泡椒猪肚"],
+            wt: ["意大利面", "黑椒牛排", "夏威夷披萨", "芝士汉堡", "日式咖喱饭", "照烧鸡腿饭", "越南河粉", "泰式冬阴功面", "韩式石锅拌饭", "墨西哥塔可", "炸鱼薯条", "俄式罗宋汤", "凯撒沙拉", "奶油炖菜", "土耳其烤肉饭", "海南鸡饭", "新加坡叻沙", "波奇饭", "日式拉面", "猪排丼", "芝士焗饭", "意式肉酱面", "三明治套餐", "炸鸡块", "培根蛋面", "法式烩鸡", "德式大香肠", "印式黄油鸡", "希腊卷饼", "泰式菠萝饭", "韩式炸鸡饭", "夏威夷披萨", "肉丸意面", "战斧牛排", "海鲜披萨", "千层饼", "法式洋葱汤", "红酒炖牛肉", "墨西哥卷饼", "日式寿喜烧", "南瓜浓汤", "金枪鱼沙拉", "牛肉堡", "塔克饼", "地中海烩饭", "葡式蛋挞饭", "意式松露面", "照烧三文鱼", "烤火鸡腿", "芝士排骨"],
+            sn: ["炸鸡汉堡套餐", "凉皮", "肉夹馍", "鸭血粉丝汤", "酸辣粉", "关东煮", "方便面", "蛋炒饭", "炒粉", "煎饼果子", "烤冷面", "臭豆腐", "章鱼小丸子", "生煎", "锅贴", "牛肉面", "兰州拉面", "沙县拌面", "冒菜", "盒饭", "酸辣粉", "凉面", "米粉", "馄饨面", "鲜肉水饺", "牛杂粉", "肠粉", "铁板炒饭", "大排档炒粉", "烤鸡腿", "鸡米花", "土豆粉", "螺蛳粉", "干拌面", "炸酱面", "小馄饨", "手抓饼", "排骨米饭", "麻辣拌", "拌米粉", "咖喱鱼蛋", "盐酥鸡", "地瓜条", "酸辣粉", "肉粽", "烤红薯", "鸡蛋仔", "铁板豆腐", "烤冷面", "炸馒头"]
+        },
+        di: {
+            cn: ["清蒸鱼", "白灼虾", "蒜蓉西兰花", "冬瓜排骨汤", "凉拌黄瓜", "皮蛋豆腐", "西葫芦炒蛋", "清炒时蔬", "百合炒西芹", "粉丝蒸扇贝", "素什锦", "海带排骨汤", "丝瓜汤", "蒸水蛋", "山药排骨汤", "白菜炖豆腐", "香菇油菜", "凉拌木耳", "砂锅粥", "素包子", "清炒虾仁", "干贝冬瓜汤", "上汤娃娃菜", "菌菇炒肉", "蚝油生菜", "莲藕排骨汤", "番茄鸡蛋汤", "紫菜蛋花汤", "银耳羹", "红豆沙", "豆腐煲", "什锦蔬菜", "香菇菜心", "清蒸鳕鱼", "扇贝粉丝", "蒜蓉娃娃菜", "蒸茄子", "清炒苦瓜", "凉拌海带丝", "拌面筋", "素馅饺子", "汤圆", "酒酿小丸子", "甜汤", "蔬菜沙拉", "玉米排骨汤", "香芋排骨", "冬瓜丸子汤", "木耳炒山药", "凉拌西红柿"],
+            sp: ["麻辣拌", "香辣烤鱼", "辣炒花甲", "酸辣蕨根粉", "泡椒凤爪", "香辣虾", "剁椒皮蛋", "干锅手撕菜", "麻辣牛肉乾", "辣味牛排", "酸汤肥牛", "沸腾鱼", "辣子肥肠", "馋嘴蛙", "辣味火锅", "重庆烤鱼", "香辣蹄花", "酸萝卜老鸭汤", "剁椒芋头", "尖椒炒肉", "麻辣香锅", "水煮牛肉", "香辣排骨", "辣子鸡丁", "干锅包菜", "烤串儿", "辣味鸡煲", "麻辣蹄花", "辣子鸡丁", "辣炒蛏子", "水煮千层肚", "香辣鱿鱼", "毛血旺", "水煮肉片", "香辣河鲜", "干锅肥肠", "双椒鱼头", "泡椒田鸡", "麻辣牛骨", "辣味纸包鱼", "湘西烧烤", "香辣蛙", "麻辣龙虾尾", "辣子鸡块", "变态鸡翅", "香辣掌中宝", "辣炒心管", "泡椒牛肉", "虎皮尖椒", "香辣猪肚"],
+            wt: ["红酒炖牛肉", "芝士焗饭", "西班牙海鲜饭", "意式烩饭", "烤羊排", "三明治", "吞拿鱼沙拉", "土豆泥", "南瓜浓汤", "法式蜗牛", "刺身", "寿司", "寿喜烧", "韩式炸鸡", "墨西哥卷饼", "炸鸡翅", "奶油培根面", "披萨", "牛排", "德国香肠", "意式肉酱面", "焗龙虾", "海鲜意面", "法式洋葱汤", "芝士拼盘", "提拉米苏", "蓝莓芝士蛋糕", "松露披萨", "鹅肝配面包", "烤火鸡", "泰式柠檬鱼", "冬阴功汤", "越南春卷", "神户牛肉", "意式通心粉", "夏多布里昂牛排", "意式烤布丁", "水果松饼", "凯撒沙拉", "三文鱼排", "法式咸派", "土耳其大饼", "咖喱羊肉", "印式烤鸡", "墨西哥塔可饼", "芝士肉酱意面", "波士顿龙虾", "日式天妇罗", "韩式部队锅", "法式烤鸭胸"],
+            sn: ["串串香", "烧烤", "小龙虾", "螺蛳粉", "炸串", "关东煮", "臭豆腐", "炒酸奶", "水果捞", "清补凉", "冰粉", "烤梨", "烤红薯", "方便面", "水饺", "汤圆", "甜品", "蛋糕", "卤味", "奶茶", "盐酥鸡", "章鱼小丸子", "烤冷面", "炒面", "凉面", "牛杂", "炸鸡爪", "麻辣拌", "铁板鱿鱼", "炸馒头", "鸡蛋仔", "煎饼", "烤面筋", "炸炸", "钵钵鸡", "冒菜", "花甲粉", "鸡翅包饭", "烤生蚝", "烤扇贝", "酸辣粉", "炒凉粉", "手抓饼", "关东煮", "凉拌皮蛋", "即食火腿", "鸭脖", "鸭头", "鸭翅", "拌面"]
+        }
+    };
+
+    let selectedSix = [];
+    let currentWinner = "";
+
+    function initCandidates() {
+        const time = document.getElementById('timeSlot').value;
+        const taste = document.getElementById('taste').value;
+        const pool = foodPool[time][taste];
+        selectedSix = [...pool].sort(() => 0.5 - Math.random()).slice(0, 6);
+        
+        document.getElementById('grid').style.display = 'grid';
+        document.getElementById('diceArea').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+        
+        selectedSix.forEach((name, i) => {
+            const el = document.getElementById(`f${i}`);
+            el.innerText = name;
+            el.classList.remove('active');
+        });
+        document.getElementById('dice').style.transform = `rotateX(0deg) rotateY(0deg)`;
+    }
+
+    function rollDice() {
+        const dice = document.getElementById('dice');
+        const winnerIdx = Math.floor(Math.random() * 6);
+        const angles = [
+            { x: 0, y: 0 }, { x: 0, y: -90 }, { x: 0, y: -180 },
+            { x: 0, y: 90 }, { x: -90, y: 0 }, { x: 90, y: 0 }
+        ];
+        
+        const rX = angles[winnerIdx].x + (Math.floor(Math.random() * 3) + 3) * 360;
+        const rY = angles[winnerIdx].y + (Math.floor(Math.random() * 3) + 3) * 360;
+        
+        dice.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
+
+        setTimeout(() => {
+            document.querySelectorAll('.food-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`f${winnerIdx}`).classList.add('active');
+            
+            currentWinner = selectedSix[winnerIdx];
+            document.getElementById('result-box').style.display = 'block';
+            document.getElementById('winnerName').innerText = "✨ " + currentWinner + " ✨";
+        }, 2000);
+    }
+
+    // 智能检查网络并跳转
+    async function smartJump() {
+        const btn = document.getElementById('winnerBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "🔍 正在检查线路...";
+        btn.classList.add('loading');
+
+        const checkGoogle = () => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                // 使用 Google 极小资源探测
+                img.src = "https://www.google.com/favicon.ico?" + new Date().getTime();
+                setTimeout(() => resolve(false), 2000); // 2秒超时
+            });
+        };
+
+        const canAccessGoogle = await checkGoogle();
+        let finalUrl = "";
+
+        if (canAccessGoogle) {
+            finalUrl = `https://www.google.com/search?q=${encodeURIComponent(currentWinner)}&tbm=isch`;
+            console.log("线路检测：国际加速通道");
+        } else {
+            finalUrl = `https://image.baidu.com/search/index?tn=baiduimage&word=${encodeURIComponent(currentWinner)}`;
+            console.log("线路检测：国内加速通道");
+        }
+
+        btn.innerText = originalText;
+        btn.classList.remove('loading');
+        window.open(finalUrl, '_blank');
+    }
+</script>
+
+</body>
+</html>
