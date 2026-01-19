@@ -1,0 +1,26 @@
+---
+layout: page
+title: "Tools"
+description: "Collection of useful tools"
+header-img: "img/post-bg-desk.jpg"
+---
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="list-group">
+                {% for page in site.pages %}
+                    {% assign url_check = page.url | remove: 'index.html' %}
+                    {% if url_check contains '/tools/' and url_check != '/tools/' %}
+                        <a href="{{ page.url | prepend: site.baseurl }}" class="list-group-item">
+                            <h4 class="list-group-item-heading">{{ page.title }}</h4>
+                            {% if page.description %}
+                                <p class="list-group-item-text">{{ page.description }}</p>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
