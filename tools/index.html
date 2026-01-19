@@ -5,27 +5,21 @@ description: "Collection of useful tools"
 header-img: "img/post-bg-desk.jpg"
 ---
 
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            {% for page in site.pages %}
-                {% assign url_check = page.url | remove: 'index.html' %}
-                {% if url_check contains '/tools/' and url_check != '/tools/' %}
-                    <div class="post-preview">
-                        <a href="{{ page.url | prepend: site.baseurl }}" target="_blank">
-                            <h2 class="post-title">
-                                {{ page.title }}
-                            </h2>
-                            {% if page.description %}
-                            <h3 class="post-subtitle">
-                                {{ page.description }}
-                            </h3>
-                            {% endif %}
-                        </a>
-                    </div>
-                    <hr>
+{% for page in site.pages %}
+    {% assign url_check = page.url | remove: 'index.html' %}
+    {% if url_check contains '/tools/' and url_check != '/tools/' %}
+        <div class="post-preview">
+            <a href="{{ page.url | prepend: site.baseurl }}" target="_blank">
+                <h2 class="post-title">
+                    {{ page.title }}
+                </h2>
+                {% if page.description %}
+                <h3 class="post-subtitle">
+                    {{ page.description }}
+                </h3>
                 {% endif %}
-            {% endfor %}
+            </a>
         </div>
-    </div>
-</div>
+        <hr>
+    {% endif %}
+{% endfor %}
