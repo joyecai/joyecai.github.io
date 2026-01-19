@@ -21,12 +21,15 @@
                     </li>
                     {% for page in site.pages %}{% if page.title %}
                     {% assign url_check = page.url | remove: 'index.html' %}
-                    {% unless url_check contains '/tools/' and url_check != '/tools/' %}
+                    {% unless url_check contains '/tools/' %}
                     <li>
                         <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
                     </li>
                     {% endunless %}
                     {% endif %}{% endfor %}
+                    <li>
+                        <a href="{{ site.baseurl }}/tools/">Tools</a>
+                    </li>
                 </ul>
             </div>
         </div>
