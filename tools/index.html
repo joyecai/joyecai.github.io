@@ -5,21 +5,46 @@ description: "Collection of useful tools"
 header-img: "img/tag-bg-o.jpg"
 ---
 
+<div class="search-tool" style="padding: 0 0 20px 0;">
+    <input type="text" id="tool-search-input" class="form-control" placeholder="Search tools..." style="font-size: 18px; padding: 20px;">
+</div>
+
 {% for page in site.pages %}
     {% assign url_check = page.url | remove: 'index.html' %}
     {% if url_check contains '/tools/' and url_check != '/tools/' %}
-        <div class="post-preview">
-            <a href="{{ page.url | prepend: site.baseurl }}" target="_blank">
-                <h2 class="post-title">
-                    {{ page.title }}
-                </h2>
-                {% if page.description %}
-                <h3 class="post-subtitle">
-                    {{ page.description }}
-                </h3>
-                {% endif %}
-            </a>
+        <div class="tool-item">
+            <div class="post-preview">
+                <a href="{{ page.url | prepend: site.baseurl }}" target="_blank">
+                    <h2 class="post-title">
+                        {{ page.title }}
+                    </h2>
+                    {% if page.description %}
+                    <h3 class="post-subtitle">
+                        {{ page.description }}
+                    </h3>
+                    {% endif %}
+                </a>
+            </div>
+            <hr>
         </div>
-        <hr>
     {% endif %}
 {% endfor %}
+
+<script>
+    document.getElementById('tool-search-input').addEventListener('input', function() {
+        var input = this.value.toLowerCase();
+        var tools = document.getElementsByClassName('tool-item');
+
+        for (var i = 0; i < tools.length; i++) {
+            var title = tools[i].getElementsByClassName('post-title')[0].innerText.toLowerCase();
+            var subtitleElement = tools[i].getElementsByClassName('post-subtitle')[0];
+            var subtitle = subtitleElement ? subtitleElement.innerText.toLowerCase() : '';
+
+            if (title.includes(input) || subtitle.includes(input)) {
+                tools[i].style.display = "block";
+            } else {
+                tools[i].style.display = "none";
+            }
+        }
+    });
+</script>
