@@ -1,0 +1,231 @@
+---
+layout: null
+title: "JSON解析"
+description: "JSON排版处理以及基础语法检查"
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON解析</title>
+    <style>
+        :root {
+            /* 页面整体（浅色） */
+            --bg-page: #f0f2f5;
+            --header-bg: #ffffff;
+            --text-title: #1a1a1a;
+            
+            /* 代码区域（深色 - VS Code Dark 风格） */
+            --bg-code: #1e1e1e;
+            --bg-linenumber: #252526;
+            --border-code: #333;
+            
+            /* 语法高亮 */
+            --key-color: #9cdcfe;
+            --string-color: #ce9178;
+            --number-color: #b5cea8;
+            --boolean-color: #569cd6;
+            
+            /* 按钮 */
+            --primary-blue: #007bff;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: var(--bg-page); height: 100vh; display: flex; flex-direction: column; }
+        
+        /* 顶部栏：保持白色洁净 */
+        header { 
+            background: var(--header-bg); padding: 0 25px; height: 60px;
+            border-bottom: 1px solid #dcdfe6;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        
+        header h2 { font-size: 18px; color: var(--text-title); margin: 0; }
+
+        .toolbar { display: flex; gap: 10px; }
+        button { 
+            padding: 8px 18px; cursor: pointer; border: 1px solid #dcdfe6; 
+            border-radius: 6px; background: #fff; font-size: 13px; font-weight: 500;
+            transition: all 0.2s; color: #606266;
+        }
+        button:hover { border-color: var(--primary-blue); color: var(--primary-blue); background: #f5faff; }
+        button.primary { background: var(--primary-blue); color: white; border: none; }
+        button.primary:hover { background: #0069d9; color: white; box-shadow: 0 2px 6px rgba(0,123,255,0.3); }
+
+        /* 主体内容 */
+        main { display: flex; flex: 1; padding: 20px; gap: 20px; overflow: hidden; }
+        
+        .editor-box { 
+            flex: 1; display: flex; flex-direction: column; 
+            background: var(--bg-code); /* 只有这里是深色 */
+            border-radius: 8px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .box-label { 
+            padding: 10px 15px; background: #333; color: #aaa; 
+            font-size: 11px; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; border-bottom: 1px solid var(--border-code);
+            display: flex; justify-content: space-between;
+        }
+
+        /* 文本区域样式 */
+        textarea, #output-content { 
+            flex: 1; border: none; padding: 15px; 
+            font-family: 'Cascadia Code', 'Consolas', monospace; 
+            font-size: 14px; line-height: 1.6; outline: none; resize: none;
+            color: #d4d4d4; background: var(--bg-code);
+        }
+
+        /* 输出区域特殊处理（行号+内容） */
+        .output-viewport { flex: 1; display: flex; overflow: auto; }
+        
+        .line-numbers {
+            width: 45px; background: var(--bg-linenumber); border-right: 1px solid var(--border-code);
+            padding: 15px 0; text-align: center; color: #666;
+            font-size: 13px; line-height: 1.6; user-select: none;
+        }
+        
+        #output-content { white-space: pre; flex: 1; }
+
+        #error-msg { 
+            background: #4a1515; color: #ffbaba; padding: 8px 15px; 
+            font-size: 13px; display: none; border-bottom: 1px solid #721c24;
+        }
+
+        /* 语法高亮标签 */
+        .json-key { color: var(--key-color); }
+        .json-string { color: var(--string-color); }
+        .json-number { color: var(--number-color); }
+        .json-boolean { color: var(--boolean-color); }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-code); }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>🧩 JSON解析</h2>
+    <div class="toolbar">
+        <button class="primary" onclick="copyResult()">复制结果</button>
+        <button onclick="clearAll()">清空</button>
+    </div>
+</header>
+
+<main>
+    <div class="editor-box">
+        <div class="box-label">Input / 待解析文本</div>
+        <textarea id="input" spellcheck="false" placeholder="在此粘贴 JSON 字符串..."></textarea>
+    </div>
+
+    <div class="editor-box">
+        <div class="box-label">
+            Output / 格式化结果
+            <span id="stat-info">0 lines</span>
+        </div>
+        <div id="error-msg"></div>
+        <div class="output-viewport">
+            <div id="line-numbers" class="line-numbers"></div>
+            <div id="output-content"></div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const inputArea = document.getElementById('input');
+    const outputContent = document.getElementById('output-content');
+    const lineNumbers = document.getElementById('line-numbers');
+    const errorMsg = document.getElementById('error-msg');
+    const statInfo = document.getElementById('stat-info');
+
+    // 预置示例
+    const sample = {
+        "appName": "JSON Helper",
+        "version": "2.0.1",
+        "status": "Running",
+        "details": {
+            "theme": "Hybrid Mode",
+            "realtime": true,
+            "highlight": "VS Code Style"
+        },
+        "tags": ["Utility", "Developer", "Web"]
+    };
+
+    window.onload = () => {
+        inputArea.value = JSON.stringify(sample, null, 4);
+        render();
+    };
+
+    inputArea.addEventListener('input', render);
+
+    function render() {
+        const val = inputArea.value.trim();
+        if (!val) {
+            resetUI();
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(val);
+            const formatted = JSON.stringify(parsed, null, 4);
+            
+            // 语法高亮
+            outputContent.innerHTML = syntaxHighlight(formatted);
+            // 生成行号
+            const lines = formatted.split('\n');
+            lineNumbers.innerHTML = lines.map((_, i) => i + 1).join('<br>');
+            statInfo.innerText = lines.length + " lines";
+            
+            errorMsg.style.display = 'none';
+        } catch (e) {
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = "❌ 解析错误: " + e.message;
+        }
+    }
+
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            let cls = 'json-number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'json-key';
+                } else {
+                    cls = 'json-string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'json-boolean';
+            } else if (/null/.test(match)) {
+                cls = 'json-boolean';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    function copyResult() {
+        navigator.clipboard.writeText(outputContent.innerText).then(() => {
+            alert("已复制格式化后的 JSON");
+        });
+    }
+
+    function resetUI() {
+        outputContent.innerHTML = "";
+        lineNumbers.innerHTML = "";
+        statInfo.innerText = "0 lines";
+        errorMsg.style.display = 'none';
+    }
+
+    function clearAll() {
+        inputArea.value = "";
+        resetUI();
+        inputArea.focus();
+    }
+</script>
+
+</body>
+</html>
