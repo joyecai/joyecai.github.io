@@ -143,9 +143,9 @@ print(state["answer"])
 
 在 HuggingFace Transformers 中，KV Cache 通常是请求级别的。如果你有两个请求共享很长的前缀（例如 System Prompt + Few-shot Examples），HF 默认会重复计算这部分的 KV Cache。虽然可以通过手动传递 `past_key_values` 优化，但工程复杂度极高。
 
-SGLang 引入了 **RadixAttention**，将 KV Cache 管理为一棵基数树（Radix Tree）。
+SGLang 引入了 **RadixAttention**，将 KV Cache 管理为一棵`基数树（Radix Tree）`。
 
-*   **机制**：自动识别并维护 Prompt 的共享前缀。当新的请求进来时，SGLang 会在 Radix Tree 中查找最长匹配前缀，直接复用其 KV Cache，仅计算新增部分。
+*   **机制**：自动识别并维护 Prompt 的共享前缀。当新的请求进来时，SGLang 会在 Radix Tree 中查找`最长匹配前缀`，直接复用其 KV Cache，仅计算新增部分。
 *   **收益**：在多轮对话、Agent 推理链（Chain-of-Thought）等场景下，Prefill 阶段的计算量可减少 60%-90%。
 
 **关键代码实现 (SGLang RadixCache 核心逻辑简化)：**
