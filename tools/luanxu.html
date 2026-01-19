@@ -49,8 +49,8 @@ description: "打乱中文语序并且添加乱码字符，用以防机器检查
     <div class="controls">
         <div class="control-group">
             <label>打乱程度</label>
-            <input type="range" id="chaosLevel" min="0" max="100" value="50">
-            <b id="chaosVal" style="width: 90px; color: var(--primary);">中度拆解</b>
+            <input type="range" id="chaosLevel" min="0" max="100" value="30">
+            <b id="chaosVal" style="width: 90px; color: var(--primary);">轻度乱序</b>
         </div>
         
         <div class="switches">
@@ -72,10 +72,8 @@ description: "打乱中文语序并且添加乱码字符，用以防机器检查
 <script>
     const noiseLib = [
         '%￥', '……', '￥%', '（', '#@', '！@#', '&……', '！！', '？！', '°', '×', 
-        '§', '»', '¿', 'Ø', '†', '‡', '¶', 'Ψ', 'Ω', 'λ', 'μ', '≡', '≠', '≈', 
-        '∫', '∮', '∑', '√', '∝', '∞', '∠', '㍿', '㊙', '卍', '〓', '◈', '▣', 
-        '◐', '◑', '❖', '⚙', '⛓', '☄', '⚓', '⚡', '✺', 'ㄅ', 'ㄆ', 'ㄇ', 'ㄈ',
-        '░', '▒', '▓'
+        '§', '»', '¿', 'Ø', '†', '‡', 'Ψ', 'Ω', 'λ', 'μ', '≡', '≠', '≈', 
+        '∫', '∮', '∑', '√', '∝', '∞', '∠'
     ];
 
     function generate() {
