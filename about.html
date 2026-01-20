@@ -5,67 +5,63 @@ description: "Hi, this is Joye Cai."
 header-img: "img/post-bg-rwd.jpg"
 ---
 
-<!-- Language Selector -->
-<!-- <select class="sel-lang" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
-    <option value="0" selected> 中文 Chinese </option>
-    <option value="1"> 英文 English </option>
-</select> -->
-
 <!-- Chinese Version -->
 <div class="zh post-container">
 
-    <!--copied from markdown -->
-    <blockquote><p>Know more, Do more, Be more. &emsp; —— 陆奇 </p></blockquote>
-	
-	<p> Hi，我是<strong>蔡嘉跃</strong>，一名AI安全产品开发者</p>
-	<p>  热爱算法研究、建模、科研、软件项目开发以及各种文娱活动</p>
-	<p>  学习、工作之余，我还是一个乒乓球爱好者</p>
-    <p>  如果有什么问题，欢迎提出探讨~ </p><br/>
+    <!-- Profile Header -->
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <img src="{{ site.baseurl }}/img/about-me.jpg" class="img-circle" style="width: 150px; height: 150px; margin-bottom: 20px; border: 5px solid rgba(255,255,255,0.5); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <h2 style="margin-top: 10px;">Joye Cai</h2>
+            <p class="text-muted">AI Security Product Developer</p>
+        </div>
+    </div>
 
-</a>
-	<br/>
-    <p>  由于原github账号登录的2FA丢失，存档在 <a href="https://coladrill.github.io/">coladrill.github.io</a> 2023年之前的博客也一并迁移到本站</p>
-	<p>  所有博客开放转载，注明出处即可</p>
-	</p>
-	
+    <!-- Quote -->
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-12">
+            <blockquote><p>Know more, Do more, Be more. &emsp; —— 陆奇 </p></blockquote>
+        </div>
+    </div>
+
+    <!-- About Content -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3><i class="fa fa-user" aria-hidden="true"></i> About Me</h3>
+            <p>Hi，我是<strong>蔡嘉跃</strong>，一名AI安全产品开发者。</p>
+            <p>我热爱<strong>算法研究</strong>、<strong>建模</strong>、<strong>科研</strong>、<strong>软件项目开发</strong>以及各种文娱活动。</p>
+            <p>学习、工作之余，我还是一个<strong>乒乓球爱好者</strong> 🏓。</p>
+        </div>
+    </div>
+
+    <!-- Skills & Interests -->
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-12">
+            <h3><i class="fa fa-tags" aria-hidden="true"></i> Skills & Interests</h3>
+            <div style="font-size: 16px; line-height: 2.5;">
+                <span class="label" style="background-color: #337ab7;">AI Security</span>
+                <span class="label" style="background-color: #5cb85c;">Algorithm Research</span>
+                <span class="label" style="background-color: #5bc0de;">Modeling</span>
+                <span class="label" style="background-color: #f0ad4e;">Software Dev</span>
+                <span class="label" style="background-color: #777;">Ping Pong</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notice -->
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-12">
+            <h3><i class="fa fa-bullhorn" aria-hidden="true"></i> Notice</h3>
+            <p>如果有什么问题，欢迎提出探讨~</p>
+            <div class="alert alert-warning" role="alert" style="margin-top: 20px;">
+                <i class="fa fa-info-circle"></i> 由于原github账号登录的2FA丢失，存档在 <a href="https://coladrill.github.io/" class="alert-link" target="_blank">coladrill.github.io</a> 2023年之前的博客也一并迁移到本站。
+                <br>
+                所有博客开放转载，注明出处即可。
+            </div>
+        </div>
+    </div>
+
 </div>
-
-<!-- Handle Language Change -->
-<script type="text/javascript">
-    // get nodes
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    var $select = document.querySelector("select");
-    // bind hashchange event
-    window.addEventListener('hashchange', _render);
-    // handle render
-    function _render(){
-        var _hash = window.location.hash;
-        // en
-        if(_hash == "#en"){
-            $select.selectedIndex = 1;
-            $en.style.display = "block";
-            $zh.style.display = "none";
-        // zh by default
-        }else{
-            // not trigger onChange, otherwise cause a loop call.
-            $select.selectedIndex = 0;
-            $zh.style.display = "block";
-            $en.style.display = "none";
-        }
-    }
-    // handle select change
-    function onLanChange(index){
-        if(index == 0){
-            window.location.hash = "#zh"
-        }else{
-            window.location.hash = "#en"
-        }
-    }
-    // init
-    _render();
-</script>
-
 
 <!-- Gitalk 评论 start  -->
 {% if site.gitalk.enable %}
