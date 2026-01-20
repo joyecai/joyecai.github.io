@@ -23,6 +23,11 @@ header-img: "img/tag-bg.jpg"
 <div class="container">
 	<div class="row">
 		<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 搜索框 -->
+            <div class="search-tool" style="padding: 0 0 20px 0;">
+                <input type="text" id="search-input" class="form-control" placeholder="Search..." style="font-size: 18px; padding: 20px;">
+            </div>
+
             <!-- 标签云 -->
 			<div id='tag_cloud' class="tags">
 				{% for tag in site.tags %}
@@ -47,6 +52,7 @@ header-img: "img/tag-bg.jpg"
 				  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
 				  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
 				  </li> -->
+                <div class="post-preview-item">
 				 <div class="post-preview">
 				    <a href="{{ post.url | prepend: site.baseurl }}">
 				        <h2 class="post-title">
@@ -61,6 +67,7 @@ header-img: "img/tag-bg.jpg"
 				    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
 				</div>
 				<hr>
+                </div>
 				{% endfor %}
 			</div>
 			{% endfor %}
@@ -68,3 +75,38 @@ header-img: "img/tag-bg.jpg"
 		</div>
 	</div>
 </div>
+
+<script>
+    document.getElementById('search-input').addEventListener('input', function() {
+        var input = this.value.toLowerCase();
+        var tagLists = document.getElementsByClassName('one-tag-list');
+
+        for (var i = 0; i < tagLists.length; i++) {
+            var tagList = tagLists[i];
+            var posts = tagList.getElementsByClassName('post-preview-item');
+            var hasVisiblePost = false;
+
+            for (var j = 0; j < posts.length; j++) {
+                var post = posts[j];
+                var titleElement = post.getElementsByClassName('post-title')[0];
+                var subtitleElement = post.getElementsByClassName('post-subtitle')[0];
+
+                var title = titleElement ? titleElement.innerText.toLowerCase() : '';
+                var subtitle = subtitleElement ? subtitleElement.innerText.toLowerCase() : '';
+
+                if (title.includes(input) || subtitle.includes(input)) {
+                    post.style.display = "block";
+                    hasVisiblePost = true;
+                } else {
+                    post.style.display = "none";
+                }
+            }
+
+            if (hasVisiblePost) {
+                tagList.style.display = "block";
+            } else {
+                tagList.style.display = "none";
+            }
+        }
+    });
+</script>
