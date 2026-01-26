@@ -1,0 +1,726 @@
+---
+layout: null
+title: "Base64 编解码"
+description: "文本编码、base64"
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🧩 Base64 编解码</title>
+  <style>
+    /* 强制白底 + 深色文字（不跟随系统暗色） */
+    :root { color-scheme: light; }
+    html, body { background:#fff; color:#111; }
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    .page{ max-width: 1200px; margin:0 auto; background:#fff; }
+
+    /* 顶部标题区 */
+    .topbar{
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+      padding:14px 16px;
+      border-bottom:1px solid #e5e7eb;
+      background:#fff;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; font-size:26px;
+      color:#111;
+    }
+
+    .wrap{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+      padding:14px 16px 18px;
+      background:#fff;
+    }
+    @media (max-width: 980px){ .wrap{ grid-template-columns:1fr; } }
+
+    .card{
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .card .title{
+      padding:12px 14px;
+      font-weight:800;
+      border-bottom:1px solid #e5e7eb;
+      background:#f9fafb;
+      color:#111;
+    }
+    .card .content{ padding:12px 14px; background:#fff; }
+
+    label{ display:block; margin:0 0 8px; font-weight:700; color:#111; }
+    .hintline{ font-size:13px; color:#4b5563; margin: 0 0 10px; }
+
+    textarea, input[type="file"], button{
+      font:inherit;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      padding:10px 12px;
+      outline:none;
+      color:#111;
+    }
+    textarea{
+      width:100%;
+      min-height: 170px;
+      resize: vertical;
+      line-height:1.45;
+    }
+    textarea::placeholder { color:#9ca3af; }
+
+    .btnrow{
+      display:flex; flex-wrap:wrap;
+      gap:10px; align-items:center;
+      margin:10px 0 10px;
+    }
+    button{ cursor:pointer; }
+    .btn-primary{
+      background:#2563eb;
+      color:#fff;
+      border-color:#2563eb;
+      font-weight:800;
+      padding:10px 16px;
+    }
+    .btn-ghost{
+      border-color:#d1d5db;
+      background:#fff;
+      color:#111;
+      font-weight:700;
+      padding:10px 16px;
+    }
+    .swapIcon{
+      font-weight:900;
+      letter-spacing: 2px;
+      font-size: 16px;
+    }
+
+    .shortcut{
+      font-weight:700;
+      color:#6b7280;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-left:6px;
+    }
+    kbd{
+      font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      border:1px solid #d1d5db;
+      padding:2px 6px;
+      border-radius:6px;
+      font-size:12px;
+      background:#f3f4f6;
+      color:#111;
+    }
+
+    .resultHead{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px; margin: 6px 0 8px;
+      font-weight:800;
+      color:#111;
+    }
+
+    .statusbar{
+      margin-top:10px;
+      background:#ecfdf5;
+      border:1px solid #bbf7d0;
+      padding:10px 12px;
+      border-radius:10px;
+      font-weight:700;
+      color:#065f46;
+    }
+    .statusbar.warn{
+      background:#fffbeb;
+      border-color:#fde68a;
+      color:#92400e;
+    }
+    .statusbar .link{
+      color:#2563eb;
+      text-decoration: underline;
+      cursor:pointer;
+      margin-left:6px;
+      font-weight:800;
+    }
+
+    .filebox{
+      margin-top:12px;
+      border-top:1px solid #e5e7eb;
+      padding-top:12px;
+    }
+    .fileline{
+      display:flex; flex-wrap:wrap;
+      align-items:center; gap:10px;
+      font-weight:700;
+      color:#111;
+    }
+    .fileline small{ color:#6b7280; font-weight:600; }
+
+    /* 右侧 */
+    .kv{
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap: 8px 10px;
+    }
+    .kv div{
+      padding:6px 0;
+      border-bottom:1px dashed #e5e7eb;
+      color:#111;
+    }
+    .kv .k{ color:#6b7280; font-weight:700; }
+
+    pre{
+      margin:0;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      overflow:auto;
+      white-space:pre-wrap;
+      word-break:break-word;
+      line-height:1.45;
+      font-size:12px;
+      background:#fff;
+      color:#111;
+    }
+    code{ font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+
+    .ok{ color:#15803d; font-weight:800; }
+    .warnText{ color:#b45309; font-weight:800; }
+
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; }
+    @media (max-width:560px){ .row2{ grid-template-columns:1fr; } }
+    .small{ font-size:12px; color:#6b7280; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid #e5e7eb;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:#111;
+      font-weight:700;
+      background:#fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand">🧩 Base64 编解码</div>
+    </div>
+
+    <div class="wrap">
+      <!-- 左侧 -->
+      <section class="card">
+        <div class="title">输入文本</div>
+        <div class="content">
+          <div class="hintline">请输入要进行 Base64 编码或解码的字符</div>
+
+          <textarea id="mainInput" placeholder="例如：12131 或 aGVsbG8="></textarea>
+
+          <div class="btnrow">
+            <button id="encodeBtn" class="btn-primary" type="button">编码 (Encode)</button>
+            <button id="decodeBtn" class="btn-ghost" type="button">解码 (Decode)</button>
+            <button id="swapBtn" class="btn-ghost" type="button" aria-label="交换">
+              <span class="swapIcon">⇅</span>
+            </button>
+
+            <span class="shortcut">（编/解码快捷键：<kbd>Ctrl</kbd> + <kbd>Enter</kbd>）</span>
+          </div>
+
+          <div class="resultHead">
+            <div>结果：</div>
+          </div>
+
+          <textarea id="mainOutput" placeholder="结果会显示在这里" readonly></textarea>
+
+          <div id="statusBar" class="statusbar" style="display:none;"></div>
+
+          <div class="filebox">
+            <div class="fileline">
+              <span>也可以选择图片文件来获取它的 Base64 编码的 DataURI 形式：</span>
+              <input id="fileInput" type="file" accept="image/*" />
+              <small id="fileHint">未选择任何文件</small>
+            </div>
+            <div class="small" style="margin-top:8px;">
+              说明：DataURI 格式类似 <code>data:image/png;base64,....</code>（图片模式仅展示“主要步骤说明”，不展开逐位推导）
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <span class="pill">安全提示</span>
+              <div class="small" style="margin-top:6px;">
+                Base64 不是加密，只是编码；传输安全请使用 TLS。
+              </div>
+            </div>
+            <div>
+              <span class="pill">小技巧</span>
+              <div class="small" style="margin-top:6px;">
+                输入看起来像 Base64 时，<kbd>Ctrl</kbd>+<kbd>Enter</kbd> 会优先执行“解码”；否则执行“编码”。
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右侧 -->
+      <section class="card">
+        <div class="title">步骤说明/推导</div>
+        <div class="content">
+          <div class="kv">
+            <div class="k">状态</div><div id="stepStatus" class="ok">等待操作</div>
+            <div class="k">字节长度</div><div id="byteLen">-</div>
+            <div class="k">Base64 长度</div><div id="b64Len">-</div>
+            <div class="k">Padding</div><div id="padding">-</div>
+            <div class="k">最近一次动作</div><div id="lastAction">-</div>
+            <div class="k">展示级别</div><div id="detailLevel">-</div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label class="small">步骤内容</label>
+            <pre id="steps"><code>点击左侧“编码/解码”，这里会展示步骤说明。
+- 文本：展示详细推导（字节→bit→6bit→索引→字符）
+- 图片(DataURI)：仅展示主要步骤说明（不逐位展开）</code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const $ = (id) => document.getElementById(id);
+
+  const mainInput = $("mainInput");
+  const mainOutput = $("mainOutput");
+  const encodeBtn = $("encodeBtn");
+  const decodeBtn = $("decodeBtn");
+  const swapBtn = $("swapBtn");
+  const statusBar = $("statusBar");
+
+  const fileInput = $("fileInput");
+  const fileHint = $("fileHint");
+
+  // 右侧
+  const stepStatus = $("stepStatus");
+  const byteLenEl = $("byteLen");
+  const b64LenEl = $("b64Len");
+  const paddingEl = $("padding");
+  const lastActionEl = $("lastAction");
+  const detailLevelEl = $("detailLevel");
+  const stepsEl = $("steps");
+
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder("utf-8", { fatal: false });
+
+  function setStepStatus(ok, msg) {
+    stepStatus.className = ok ? "ok" : "warnText";
+    stepStatus.textContent = msg;
+  }
+
+  function showStatusBar(text, kind = "ok") {
+    statusBar.style.display = "block";
+    statusBar.classList.toggle("warn", kind !== "ok");
+    statusBar.innerHTML = text;
+  }
+  function clearStatusBar() {
+    statusBar.style.display = "none";
+    statusBar.textContent = "";
+    statusBar.classList.remove("warn");
+  }
+
+  function bytesToHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
+  function base64Encode(bytes) {
+    let out = "";
+    for (let i=0;i<bytes.length;i+=3) {
+      const a = bytes[i];
+      const b = (i+1<bytes.length) ? bytes[i+1] : 0;
+      const c = (i+2<bytes.length) ? bytes[i+2] : 0;
+
+      const triple = (a<<16) | (b<<8) | c;
+
+      const idx1 = (triple >> 18) & 63;
+      const idx2 = (triple >> 12) & 63;
+      const idx3 = (triple >> 6) & 63;
+      const idx4 = triple & 63;
+
+      out += ALPHABET[idx1];
+      out += ALPHABET[idx2];
+      out += (i+1<bytes.length) ? ALPHABET[idx3] : "=";
+      out += (i+2<bytes.length) ? ALPHABET[idx4] : "=";
+    }
+    return out;
+  }
+
+  function base64DecodeToBytes(b64) {
+    const clean = b64.trim().replace(/\s+/g, "");
+    if (clean.length === 0) return new Uint8Array([]);
+    if (clean.length % 4 !== 0) throw new Error("Base64 长度必须是 4 的倍数（可包含 '=' padding）。");
+
+    const pad = (clean.endsWith("==") ? 2 : clean.endsWith("=") ? 1 : 0);
+    const len = (clean.length * 3) / 4 - pad;
+    const out = new Uint8Array(len);
+
+    let outIdx = 0;
+    for (let i=0;i<clean.length;i+=4) {
+      const c1 = clean[i], c2 = clean[i+1], c3 = clean[i+2], c4 = clean[i+3];
+      const i1 = ALPHABET.indexOf(c1);
+      const i2 = ALPHABET.indexOf(c2);
+      const i3 = (c3 === "=") ? 0 : ALPHABET.indexOf(c3);
+      const i4 = (c4 === "=") ? 0 : ALPHABET.indexOf(c4);
+
+      if (i1 < 0 || i2 < 0 || (c3 !== "=" && i3 < 0) || (c4 !== "=" && i4 < 0)) {
+        throw new Error("Base64 包含非法字符（只能 A-Z a-z 0-9 + / 以及 '='）。");
+      }
+
+      const triple = (i1<<18) | (i2<<12) | (i3<<6) | i4;
+
+      if (outIdx < len) out[outIdx++] = (triple >> 16) & 255;
+      if (c3 !== "=" && outIdx < len) out[outIdx++] = (triple >> 8) & 255;
+      if (c4 !== "=" && outIdx < len) out[outIdx++] = triple & 255;
+    }
+    return out;
+  }
+
+  function isLikelyDataURIImage(s) {
+    const t = (s || "").trim();
+    return /^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(t);
+  }
+
+  function explainEncodeDetailed(bytes) {
+    const hex = bytesToHex(bytes);
+    const bits8 = Array.from(bytes).map(b => b.toString(2).padStart(8,"0"));
+
+    const chunks24 = [];
+    for (let i=0;i<bytes.length;i+=3) {
+      const slice = bytes.slice(i, i+3);
+      const sliceBits = Array.from(slice).map(b => b.toString(2).padStart(8,"0")).join("");
+      chunks24.push({ slice, sliceBits });
+    }
+
+    const mod = bytes.length % 3;
+    const pad = mod === 0 ? 0 : (3 - mod);
+    const paddingStr = pad === 0 ? "(无)" : "=".repeat(pad);
+
+    let charsAll = [];
+
+    const perChunkLines = chunks24.map((c, ci) => {
+      const paddedBits = c.sliceBits.padEnd(24, "0");
+      const groups6 = [];
+      const idxs = [];
+      const chars = [];
+
+      for (let j=0;j<24;j+=6) {
+        const g = paddedBits.slice(j,j+6);
+        groups6.push(g);
+        const idx = parseInt(g, 2);
+        idxs.push(idx);
+        chars.push(ALPHABET[idx]);
+      }
+
+      if (ci === chunks24.length - 1 && pad > 0) {
+        for (let k=0;k<pad;k++) chars[chars.length-1-k] = "=";
+      }
+
+      charsAll.push(...chars);
+
+      const sliceHex = bytesToHex(c.slice);
+      const slice8 = Array.from(c.slice).map(b => b.toString(2).padStart(8,"0")).join(" ");
+
+      return [
+        `块 ${ci+1}: 输入字节(hex)=${sliceHex || "(空)"} | 8bit=${slice8 || "(空)"}`,
+        `      24bit(不足补0)=${paddedBits || "(空)"}`,
+        `      6bit分组=${groups6.join(" ") || "(空)"}`,
+        `      索引=${idxs.map(x => String(x).padStart(2," ")).join(" ") || "(空)"}`,
+        `      Base64字符=${chars.join(" ") || "(空)"}`
+      ].join("\n");
+    }).join("\n");
+
+    const b64 = base64Encode(bytes);
+
+    return {
+      b64,
+      paddingStr,
+      stepsText:
+`【编码-详细推导（文本）】
+1) UTF-8 → 字节流（hex）:
+   ${hex || "(空)"}
+2) 每字节 8bit 拼接:
+   ${bits8.length ? bits8.join(" ") : "(空)"}
+3) 每 3 字节(24bit) 分块，并按 6bit 分组:
+${perChunkLines || "(空)"}
+4) 索引 → Base64字符（末尾可能补 '='）:
+   ${charsAll.length ? charsAll.join("") : "(空)"}
+5) 输出 Base64:
+   ${b64}`
+    };
+  }
+
+  function explainDecodeDetailed(b64Input) {
+    const cleaned = b64Input.trim().replace(/\s+/g, "");
+    if (cleaned.length === 0) {
+      return { text: "", bytes: new Uint8Array([]), pad: 0, stepsText:
+`【解码-详细推导（文本）】
+1) 输入 Base64: (空)
+2) 过滤空白后: (空)
+3) 4字符一组 → 索引(=忽略) → 6bit:
+   (空)
+4) 6bit 拼接 → 8bit 字节流:
+   (空)
+5) UTF-8 解码输出:
+   (空)`
+      };
+    }
+    if (cleaned.length % 4 !== 0) throw new Error("Base64 长度必须是 4 的倍数（可包含 '=' padding）。");
+
+    const padCount = (cleaned.endsWith("==") ? 2 : cleaned.endsWith("=") ? 1 : 0);
+
+    const groups4 = [];
+    for (let i=0;i<cleaned.length;i+=4) groups4.push(cleaned.slice(i,i+4));
+
+    const perGroupLines = [];
+    groups4.forEach((g, gi) => {
+      const chars = g.split("");
+      const idxs = chars.map(ch => ch === "=" ? null : ALPHABET.indexOf(ch));
+      if (idxs.some(x => x === -1)) throw new Error("Base64 包含非法字符（只能 A-Z a-z 0-9 + / 以及 '='）。");
+
+      const bits6 = idxs.map(x => x === null ? null : x.toString(2).padStart(6,"0"));
+      const joined6 = bits6.filter(x => x !== null).join("");
+
+      const bytes = [];
+      for (let i=0;i<joined6.length;i+=8) {
+        const b = joined6.slice(i,i+8);
+        if (b.length === 8) bytes.push(parseInt(b,2));
+      }
+
+      perGroupLines.push(
+        `组 ${gi+1}: Base64=${g}\n` +
+        `      索引(=忽略)=${idxs.map(x => x===null ? " =" : String(x).padStart(2," ")).join(" ")}\n` +
+        `      6bit(=忽略)=${bits6.map(x => x===null ? "======": x).join(" ")}\n` +
+        `      拼接6bit=${joined6 || "(空)"}\n` +
+        `      还原字节(hex)=${bytes.map(b => b.toString(16).padStart(2,"0")).join("") || "(空)"}`
+      );
+    });
+
+    const bytesFinal = base64DecodeToBytes(cleaned);
+    const text = decoder.decode(bytesFinal);
+
+    return {
+      text,
+      bytes: bytesFinal,
+      pad: padCount,
+      stepsText:
+`【解码-详细推导（文本）】
+1) 输入 Base64:
+   ${b64Input}
+2) 过滤空白后:
+   ${cleaned}
+3) 4字符一组 → 索引 & 6bit（逐组展示）:
+${perGroupLines.join("\n")}
+
+4) 6bit 拼接 → 8bit 字节流（最终）:
+   hex=${bytesToHex(bytesFinal) || "(空)"}
+5) UTF-8 解码输出:
+   ${text || "(空)"}`
+    };
+  }
+
+  function explainImageBrief() {
+    return `【图片(DataURI) - 主要步骤说明（简版）】
+1) 读取图片文件的二进制内容（bytes）
+2) Base64 编码：每 3 字节 → 4 个字符，不足补 '='
+3) 拼接 DataURI：data:image/<type>;base64, + Base64内容
+4) 输出可直接用于网页的 DataURI（img.src / CSS background-image）`;
+  }
+
+  function updateRightPanel({ ok, status, byteLen, b64Len, padding, steps, lastAction, detailLevel }) {
+    setStepStatus(ok, status);
+    byteLenEl.textContent = byteLen ?? "-";
+    b64LenEl.textContent = b64Len ?? "-";
+    paddingEl.textContent = padding ?? "-";
+    stepsEl.textContent = steps ?? "";
+    lastActionEl.textContent = lastAction ?? "-";
+    detailLevelEl.textContent = detailLevel ?? "-";
+  }
+
+  function doEncode() {
+    try {
+      clearStatusBar();
+      const raw = mainInput.value;
+
+      // DataURI 图片：不展开细节
+      if (isLikelyDataURIImage(raw)) {
+        mainOutput.value = raw;
+        showStatusBar(`检测到图片 DataURI：它本身已包含 Base64。已原样输出。`, "ok");
+
+        updateRightPanel({
+          ok: true,
+          status: "图片模式：步骤说明（简版）",
+          byteLen: "-",
+          b64Len: String(raw.length),
+          padding: "-",
+          steps: explainImageBrief(),
+          lastAction: "编码 (图片/DataURI)",
+          detailLevel: "简版说明"
+        });
+        return;
+      }
+
+      const bytes = encoder.encode(raw);
+      const exp = explainEncodeDetailed(bytes);
+      mainOutput.value = exp.b64;
+
+      showStatusBar(
+        `编码完毕，原文字节数：${bytes.length}，编码后字节数：${exp.b64.length}。` +
+        `<span class="link" id="copyLink">复制结果</span>`,
+        "ok"
+      );
+
+      updateRightPanel({
+        ok: true,
+        status: "编码完成",
+        byteLen: String(bytes.length),
+        b64Len: String(exp.b64.length),
+        padding: exp.paddingStr,
+        steps: exp.stepsText,
+        lastAction: "编码 (文本)",
+        detailLevel: "详细推导"
+      });
+
+      document.getElementById("copyLink")?.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(mainOutput.value);
+          showStatusBar(`已复制结果到剪贴板。`, "ok");
+        } catch {
+          showStatusBar(`复制失败：浏览器可能禁止剪贴板访问，请手动复制。`, "warn");
+        }
+      });
+
+    } catch (e) {
+      showStatusBar(`编码失败：${e.message || String(e)}`, "warn");
+      updateRightPanel({ ok:false, status: e.message || String(e), lastAction:"编码失败", detailLevel:"-" });
+    }
+  }
+
+  function doDecode() {
+    try {
+      clearStatusBar();
+      const raw = mainInput.value;
+
+      if (isLikelyDataURIImage(raw)) {
+        const idx = raw.indexOf("base64,");
+        const b64 = idx >= 0 ? raw.slice(idx + "base64,".length) : "";
+        mainOutput.value = b64;
+
+        showStatusBar(`已从 DataURI 提取 Base64 内容（输出区为 Base64 部分）。`, "ok");
+
+        updateRightPanel({
+          ok: true,
+          status: "图片模式：步骤说明（简版）",
+          byteLen: "-",
+          b64Len: String(b64.length),
+          padding: b64.endsWith("==") ? "==" : b64.endsWith("=") ? "=" : "(无/未知)",
+          steps: explainImageBrief(),
+          lastAction: "解码 (图片/DataURI)",
+          detailLevel: "简版说明"
+        });
+        return;
+      }
+
+      const exp = explainDecodeDetailed(raw);
+      mainOutput.value = exp.text;
+
+      const cleanedLen = raw.trim().replace(/\s+/g,"").length;
+      showStatusBar(`解码完毕，Base64长度：${cleanedLen}，输出字节数：${exp.bytes.length}。`, "ok");
+
+      updateRightPanel({
+        ok: true,
+        status: "解码完成（按 UTF-8 显示）",
+        byteLen: String(exp.bytes.length),
+        b64Len: String(cleanedLen),
+        padding: exp.pad ? "=".repeat(exp.pad) : "(无)",
+        steps: exp.stepsText,
+        lastAction: "解码 (文本/Base64)",
+        detailLevel: "详细推导"
+      });
+
+    } catch (e) {
+      showStatusBar(`解码失败：${e.message || String(e)}`, "warn");
+      updateRightPanel({ ok:false, status: e.message || String(e), lastAction:"解码失败", detailLevel:"-" });
+    }
+  }
+
+  function doSwap() {
+    const a = mainInput.value;
+    mainInput.value = mainOutput.value;
+    mainOutput.value = a;
+    showStatusBar(`已交换输入与输出。`, "ok");
+    updateRightPanel({ ok:true, status:"已交换输入与输出", lastAction:"交换", detailLevel:"-" });
+  }
+
+  function onShortcut(e) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      const s = mainInput.value.trim();
+      const looksLikeB64 =
+        s.length >= 4 &&
+        s.length % 4 === 0 &&
+        /^[A-Za-z0-9+\/=\s]+$/.test(s);
+
+      if (looksLikeB64) doDecode();
+      else doEncode();
+      e.preventDefault();
+    }
+  }
+
+  function onFileChange() {
+    const f = fileInput.files?.[0];
+    if (!f) {
+      fileHint.textContent = "未选择任何文件";
+      return;
+    }
+    fileHint.textContent = f.name;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || "");
+      mainInput.value = dataUrl;
+      showStatusBar(`已读取图片并生成 DataURI（已写入输入框）。`, "ok");
+
+      updateRightPanel({
+        ok: true,
+        status: "已生成图片 DataURI",
+        byteLen: "-",
+        b64Len: String(dataUrl.length),
+        padding: "-",
+        steps: explainImageBrief(),
+        lastAction: "选择图片文件",
+        detailLevel: "简版说明"
+      });
+    };
+    reader.onerror = () => showStatusBar(`读取文件失败。`, "warn");
+    reader.readAsDataURL(f);
+  }
+
+  encodeBtn.addEventListener("click", doEncode);
+  decodeBtn.addEventListener("click", doDecode);
+  swapBtn.addEventListener("click", doSwap);
+  document.addEventListener("keydown", onShortcut);
+  fileInput.addEventListener("change", onFileChange);
+
+  // 初始化示例
+  mainInput.value = "12131";
+  updateRightPanel({ ok:true, status:"等待操作", lastAction:"-", detailLevel:"-" });
+})();
+</script>
+</body>
+</html>
