@@ -1,0 +1,814 @@
+---
+layout: null
+title: "AI 问题路由器"
+description: "解决AI大模型选择困难症，自动拼接模板并建议模型跳转"
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>🧩 AI 问题路由器</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1620;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --border:#1f2a37;
+      --accent:#60a5fa;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --r:16px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.25), transparent 55%),
+                  radial-gradient(900px 500px at 80% 20%, rgba(52,211,153,.18), transparent 60%),
+                  var(--bg);
+    }
+    header{max-width:1100px;margin:0 auto;padding:22px 18px 10px}
+    h1{margin:0 0 8px;font-size:18px;letter-spacing:.2px}
+    header p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 18px 26px;display:grid;gap:14px}
+    .panel{
+      background:rgba(15,22,32,.86);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+      overflow:hidden;
+    }
+    .hd{
+      padding:12px 14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .tag{
+      font-size:12px;color:var(--muted);
+      border:1px solid var(--border);
+      padding:6px 10px;border-radius:999px;
+      background:rgba(11,18,32,.35);
+      white-space:nowrap;
+    }
+    .box{padding:14px}
+    .hint{color:var(--muted);font-size:12px;line-height:1.55;margin:0 0 10px}
+    textarea{
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.55;
+      outline:none;
+      font-family:var(--sans);
+      white-space:pre-wrap;
+    }
+    .cats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    @media (max-width: 980px){ .cats{grid-template-columns:1fr} }
+    .cat{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background: linear-gradient(180deg, rgba(18,28,39,.9), rgba(18,28,39,.65));
+      cursor:pointer;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .cat:hover{border-color:rgba(96,165,250,.55)}
+    .cat input{margin-top:3px}
+    .cat .t{font-weight:650;font-size:13px;margin:0 0 4px}
+    .cat .d{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){ .twoCol{grid-template-columns:1fr} }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .tile{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(11,18,32,.55);
+    }
+    .tile .h{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .tile .v{font-size:12px;line-height:1.5}
+
+    .toolbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:rgba(11,18,32,.55);
+      margin-bottom:10px;
+    }
+    .seg{
+      display:inline-flex;
+      border:1px solid var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .seg button{
+      border:0;
+      border-right:1px solid var(--border);
+      background:transparent;
+      padding:8px 12px;
+      font-size:12px;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .seg button:last-child{border-right:0}
+    .seg button.active{
+      color:var(--text);
+      background:rgba(96,165,250,.14);
+    }
+
+    .platforms{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .plat{
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px;
+      background: linear-gradient(180deg, rgba(18,28,39,.9), rgba(18,28,39,.65));
+    }
+    .plat .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .plat .name{font-weight:650;font-size:13px;margin:0}
+    .plat .meta{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.4}
+    .plat .res{
+      margin-top:8px;
+      border-top:1px dashed rgba(148,163,184,.25);
+      padding-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{
+      cursor:pointer;
+      border:1px solid var(--border);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:12px;
+      background: linear-gradient(180deg, rgba(96,165,250,.22), rgba(96,165,250,.10));
+    }
+    button.secondary{
+      background: linear-gradient(180deg, rgba(52,211,153,.22), rgba(52,211,153,.10));
+    }
+    button.ghost{background:transparent}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    a.btnlink{
+      text-decoration:none;
+      display:inline-block;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      font-size:12px;
+      color:var(--text);
+      background: rgba(96,165,250,.10);
+    }
+    a.btnlink:hover{border-color:rgba(96,165,250,.6)}
+    .small{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.55}
+    .toast{
+      position:fixed;right:16px;bottom:16px;
+      background:rgba(15,22,32,.92);
+      border:1px solid var(--border);
+      padding:10px 12px;border-radius:12px;
+      box-shadow:var(--shadow);
+      font-size:12px;
+      opacity:0;transform:translateY(10px);
+      pointer-events:none;transition:.18s ease;
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+    .mono{font-family:var(--mono)}
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>🧩 AI 问题路由器</h1>
+  <p>
+    Step 1 只输入问题；Step 2 选择类别；Step 3 顶部可切换「国外/国内」模型，平台说明会随“问题分类”动态变化，并展示平台背后公司可用的内容资源。
+  </p>
+</header>
+
+<div class="wrap">
+
+  <!-- Step 1 -->
+  <section class="panel" id="step1">
+    <div class="hd">
+      <span class="tag">Step 1 / 输入问题</span>
+      <span class="tag" id="qMeta">0 字符</span>
+    </div>
+    <div class="box">
+      <p class="hint">只需输入你的问题（本步不提供复制按钮）。</p>
+      <textarea id="question" placeholder="例如：帮我找 2023-2025 年关于 RAGFlow 的论文并给出引用"></textarea>
+      <div class="small">提示：问题越具体（目标/约束/输出格式），后续模板越好用。</div>
+    </div>
+  </section>
+
+  <!-- Step 2 -->
+  <section class="panel" id="step2">
+    <div class="hd">
+      <span class="tag">Step 2 / 选择类别</span>
+      <span class="tag" id="catMeta">未选择</span>
+    </div>
+    <div class="box">
+      <p class="hint">选择类别后会自动生成模板，并刷新平台推荐与说明。</p>
+      <div class="cats" id="catList"></div>
+    </div>
+  </section>
+
+  <!-- Step 3 -->
+  <section class="panel" id="step3">
+    <div class="hd">
+      <span class="tag">Step 3 / 模板 + 平台（复制并跳转）</span>
+      <span class="tag" id="stateMeta">模板未生成</span>
+    </div>
+
+    <div class="box">
+      <div class="twoCol">
+        <div>
+          <p class="hint">自动模板会把“原问题”插入进去；你也可以编辑模板后再复制跳转。</p>
+          <textarea id="prompt" placeholder="选择类别后自动填充…"></textarea>
+
+          <div class="kpi">
+            <div class="tile">
+              <div class="h">当前类别</div>
+              <div class="v" id="catTitle">—</div>
+            </div>
+            <div class="tile">
+              <div class="h">推荐策略</div>
+              <div class="v" id="catStrategy">—</div>
+            </div>
+          </div>
+
+          <div class="small">
+            说明：复制必须由用户点击触发（浏览器安全限制）。平台按钮会在点击时先复制，再打开新标签页。<br/>
+            若复制失败，优先用 https 打开此页面，或在浏览器设置中允许剪贴板权限。
+          </div>
+        </div>
+
+        <div>
+          <!-- Region toggle + dynamic notes -->
+          <div class="toolbar">
+            <div class="tag" id="regionMeta">当前：国外模型</div>
+            <div class="seg" aria-label="region toggle">
+              <button id="btnOverseas" class="active" type="button">国外模型</button>
+              <button id="btnDomestic" type="button">国内模型</button>
+            </div>
+          </div>
+
+          <p class="hint" id="why">请选择类别以显示推荐平台。</p>
+          <div class="platforms" id="plats"></div>
+
+          <div class="small">
+            你可以在配置里继续补充每个平台的「公司与内容资源」以及「不同类别下的说明」。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">已复制</div>
+
+<script>
+  // ---------------------------
+  // Platform catalog (海外 + 国内)
+  // companyResources: 用于展示“背后资源”
+  // baseNotes: 通用说明
+  // categoryNotes: 随分类变化的说明（可选，命中则覆盖 baseNotes）
+  // ---------------------------
+  const PLATFORMS = {
+    // Overseas
+    chatgpt: {
+      region: "overseas",
+      name:"ChatGPT",
+      url:"https://chatgpt.com/",
+      company:"OpenAI",
+      companyResources:["自有模型与工具生态（对话、代码、文件理解等）"],
+      baseNotes:"通用推理、结构化输出、代码/SQL/方案拆解很稳。",
+      categoryNotes:{
+        paper:"适合把检索到的论文做结构化综述、对比与阅读路线。",
+        code:"适合产出可运行实现、测试用例、排错路径与工程化方案。",
+        data:"适合口径对齐、SQL 生成与分析框架搭建。",
+        write:"适合结构化写作与业务表达（也可配合润色）。",
+        strategy:"适合做方案拆解、权衡与路线图/指标体系。",
+        news:"适合把多来源事实整理成结构化结论与行动清单。"
+      }
+    },
+    gemini: {
+      region: "overseas",
+      name:"Gemini",
+      url:"https://gemini.google.com/app",
+      company:"Google",
+      companyResources:["Google Search","Google Scholar（学术索引）","YouTube（视频内容）"],
+      baseNotes:"偏检索/资料整合；适配 Google 生态（网页/学术）。",
+      categoryNotes:{
+        paper:"学术检索/关键词扩展更占优势（尤其需要 Scholar/网页索引时）。",
+        news:"适合快速补齐资料、背景脉络与来源线索。",
+        image:"多模态理解与图文结合的资料整理较方便。"
+      }
+    },
+    perplexity: {
+      region: "overseas",
+      name:"Perplexity",
+      url:"https://www.perplexity.ai/",
+      company:"Perplexity AI",
+      companyResources:["多来源网页检索","引用/来源呈现（便于回溯）"],
+      baseNotes:"强检索+引用；适合先拉来源与链接。",
+      categoryNotes:{
+        paper:"适合先抓论文线索与引用入口，再回到推理平台总结。",
+        news:"适合快速得到近期事实与出处，再做观点归纳。"
+      }
+    },
+    claude: {
+      region: "overseas",
+      name:"Claude",
+      url:"https://claude.ai/",
+      company:"Anthropic",
+      companyResources:["擅长长文处理与总结（文档型任务）"],
+      baseNotes:"长文总结/润色/文档产出强，适合报告型交付。",
+      categoryNotes:{
+        write:"非常适合长文润色、语气统一、版式与表达优化。",
+        strategy:"适合把方案写成可交付文档（PRD/Proposal/汇报稿）。"
+      }
+    },
+    grok: {
+      region: "overseas",
+      name:"Grok",
+      url:"https://grok.x.ai/",
+      company:"xAI",
+      companyResources:["X（Twitter）内容生态（趋势/舆情/讨论）"],
+      baseNotes:"偏实时趋势讨论与观点碰撞；适合追问扩散。",
+      categoryNotes:{
+        news:"适合围绕热点/舆情做追问与观点碰撞，再回收成结论。",
+        strategy:"适合快速发散备选方案与反方观点。"
+      }
+    },
+
+    // Domestic (占位：你可以替换成你实际常用平台)
+    kimi: {
+      region: "domestic",
+      name:"Kimi",
+      url:"https://kimi.moonshot.cn/",
+      company:"Moonshot AI（月之暗面）",
+      companyResources:["长文本处理能力（常用于文档/资料）"],
+      baseNotes:"适合长文/资料总结与对话式写作（按你实际体验调整）。",
+      categoryNotes:{ write:"适合长文本润色与归纳。", paper:"适合对论文内容做长文总结与提要。"}
+    },
+    qwen: {
+      region: "domestic",
+      name:"通义千问",
+      url:"https://tongyi.aliyun.com/",
+      company:"阿里巴巴",
+      companyResources:["阿里云生态（工具/应用集成，按你的使用情况调整）"],
+      baseNotes:"适合通用问答与企业场景集成（按你实际体验调整）。",
+      categoryNotes:{ code:"适合工程问答与代码辅助（按体验调整）。"}
+    },
+    ernie: {
+      region: "domestic",
+      name:"文心一言",
+      url:"https://yiyan.baidu.com/",
+      company:"百度",
+      companyResources:["百度搜索生态（按可用性/体验调整）"],
+      baseNotes:"适合信息检索与中文表达（按你实际体验调整）。",
+      categoryNotes:{ news:"适合中文信息检索与汇总（按体验调整）。"}
+    },
+    deepseek: {
+      region: "domestic",
+      name:"DeepSeek",
+      url:"https://chat.deepseek.com/",
+      company:"DeepSeek",
+      companyResources:["自有模型生态（按你实际体验调整）"],
+      baseNotes:"适合推理/代码类任务（按你实际体验调整）。",
+      categoryNotes:{ code:"偏代码/推理可优先尝试（按体验调整）。", data:"偏 SQL/分析也可尝试。"}
+    }
+  };
+
+  // ---------------------------
+  // Categories
+  // ---------------------------
+  const CATEGORIES = [
+    {
+      id:"paper",
+      title:"📚 论文检索 / 学术资料（要引用）",
+      desc:"找论文、作者、会议/期刊、年份；给检索式与引用格式。",
+      strategy:"先检索平台拉候选论文与出处，再用推理平台做阅读路线与对比总结。",
+      why:"学术任务高度依赖检索生态（如 Scholar/网页索引）与引用输出。",
+      recommends:{
+        overseas:["gemini","perplexity","chatgpt"],
+        domestic:["kimi","ernie","qwen"]
+      },
+      template:(q)=>[
+        "你是研究助理。请完成“学术检索 + 筛选 + 阅读路线图”。",
+        "",
+        "【我的问题】",
+        q || "{请补充问题}",
+        "",
+        "【输出要求】",
+        "1) 给出 10-20 篇最相关论文（按相关性排序）：标题、作者、年份、会议/期刊、核心贡献(2-3句)、我为什么要读它。",
+        "2) 给出 3-5 条可复现检索式（中英关键词 + 检索式）。",
+        "3) 给阅读路线：先综述/经典 → 再最新工作；并标注每篇阅读重点（章节/实验/结论）。",
+        "4) 输出引用格式：BibTeX / APA / IEEE（选一种）。",
+        "",
+        "【约束】",
+        "- 年份范围：",
+        "- 领域/会议偏好：",
+        "- 深度：概览 / 深入复现"
+      ].join("\n")
+    },
+    {
+      id:"code",
+      title:"🧩 编码 / 调试 / 架构设计",
+      desc:"可运行实现；边界条件、测试用例、排错路径。",
+      strategy:"先明确 I/O 与约束，再产出 MVP 可运行版本 + 可扩展版本。",
+      why:"工程任务强调可执行、可维护、可测试与排错。",
+      recommends:{
+        overseas:["chatgpt","claude","gemini"],
+        domestic:["deepseek","qwen","kimi"]
+      },
+      template:(q)=>[
+        "你是资深工程师。请把需求实现为【可运行】方案，并给出测试与边界处理。",
+        "",
+        "【需求/问题】",
+        q || "{请补充问题}",
+        "",
+        "【运行环境】",
+        "- 语言/版本：",
+        "- 运行方式：浏览器 / Node / Python / …",
+        "- 是否允许第三方库：",
+        "",
+        "【输入/输出】",
+        "- 输入：",
+        "- 输出：",
+        "",
+        "【请交付】",
+        "1) 方案说明（模块/数据流/关键设计）",
+        "2) 完整代码（可复制运行）",
+        "3) 至少 5 个测试用例（含边界）",
+        "4) 常见失败原因与排查步骤"
+      ].join("\n")
+    },
+    {
+      id:"data",
+      title:"📊 数据分析 / SQL / 指标体系",
+      desc:"口径对齐、SQL、指标、看板结构、洞察与建议。",
+      strategy:"先对齐口径（粒度/时间窗/过滤），再写可验证 SQL 与输出。",
+      why:"数据任务最常见问题是口径不一致与粒度/时间窗错误。",
+      recommends:{
+        overseas:["chatgpt","claude","gemini"],
+        domestic:["deepseek","qwen","kimi"]
+      },
+      template:(q)=>[
+        "你是商业/数据分析师。请按“口径对齐 → 数据准备 → 分析 → 结论 → 行动”的结构输出。",
+        "",
+        "【业务问题】",
+        q || "{请补充问题}",
+        "",
+        "【数据表 & 字段】",
+        "- 表1：字段含义：",
+        "- 表2：字段含义：",
+        "",
+        "【口径要求】",
+        "- 粒度：订单/包裹/用户/天/周…",
+        "- 时间范围：",
+        "- 过滤条件：",
+        "- 指标定义：",
+        "",
+        "【请交付】",
+        "1) 必须先确认的口径清单",
+        "2) SQL（尽量可直接运行）并解释逻辑",
+        "3) 看板结构建议（维度/指标/切片）",
+        "4) 业务洞察（可执行建议 + 风险点）"
+      ].join("\n")
+    },
+    {
+      id:"write",
+      title:"✍️ 写作 / 翻译 / 润色",
+      desc:"邮件、汇报、简历、双语翻译；语气匹配与术语一致。",
+      strategy:"先锁定受众/目的/语气，再产出可直接使用版本，最后统一术语。",
+      why:"写作类核心是结构与语气一致性，而不是逐字替换。",
+      recommends:{
+        overseas:["claude","chatgpt"],
+        domestic:["kimi","qwen","ernie"]
+      },
+      template:(q)=>[
+        "你是资深写作者/翻译编辑。请把内容写成【可直接使用】版本。",
+        "",
+        "【原问题/原文】",
+        q || "{请补充内容}",
+        "",
+        "【场景】邮件 / 汇报 / 面试 / 简历 / 学术（选一个）",
+        "【受众】",
+        "【语气】正式 / 半正式 / 口语（选一个）",
+        "",
+        "【输出要求】",
+        "1) 推荐版本（可直接发送/上台）",
+        "2) 更简短版本（同语气）",
+        "3) 关键术语中英对照（如适用）",
+        "4) 语气/逻辑调整说明（简要）"
+      ].join("\n")
+    },
+    {
+      id:"strategy",
+      title:"🧠 产品 / 商业策略 / 方案设计",
+      desc:"目标、备选方案对比、路线图、指标体系、风险预案。",
+      strategy:"先定北极星指标与约束，再做方案对比与执行拆解。",
+      why:"策略任务本质是结构化权衡与可执行路径。",
+      recommends:{
+        overseas:["chatgpt","claude","gemini"],
+        domestic:["qwen","kimi","deepseek"]
+      },
+      template:(q)=>[
+        "你是产品/战略顾问。请把问题拆成可执行方案，并给出指标与风险控制。",
+        "",
+        "【背景/问题】",
+        q || "{请补充问题}",
+        "",
+        "【目标】（量化）",
+        "- ",
+        "",
+        "【约束】预算/人力/时间/合规/数据：",
+        "- ",
+        "",
+        "【请输出】",
+        "1) 问题诊断（关键假设/根因）",
+        "2) 3 个备选方案（优缺点、成本、风险、适用条件）",
+        "3) 推荐方案路线图（4-8周里程碑）",
+        "4) 指标体系（北极星+驱动+护栏）",
+        "5) 风险清单与预案"
+      ].join("\n")
+    },
+    {
+      id:"news",
+      title:"🗞️ 趋势 / 实时信息（需要新信息）",
+      desc:"最近动态、多来源线索、事实与观点区分、行动建议。",
+      strategy:"先用强检索/实时平台拉事实与出处，再回到推理平台做结论。",
+      why:"实时任务依赖最新信息与引用，必须强调来源与时间。",
+      recommends:{
+        overseas:["perplexity","grok","gemini","chatgpt"],
+        domestic:["ernie","qwen","kimi"]
+      },
+      template:(q)=>[
+        "请基于最近信息做趋势梳理：区分事实与观点，并给出处/线索（可验证）。",
+        "",
+        "【主题】",
+        q || "{请补充主题}",
+        "",
+        "【时间范围】最近 7 天 / 30 天 / 90 天（选一个）",
+        "",
+        "【输出要求】",
+        "1) 事实清单（按时间排序，标注来源线索）",
+        "2) 主要观点与分歧点（为什么分歧）",
+        "3) 综合判断（明确假设）",
+        "4) 下一步信息补齐清单/行动建议"
+      ].join("\n")
+    }
+  ];
+
+  // ---------------------------
+  // DOM
+  // ---------------------------
+  const $ = (sel)=>document.querySelector(sel);
+  const questionEl = $("#question");
+  const qMetaEl = $("#qMeta");
+
+  const catListEl = $("#catList");
+  const catMetaEl = $("#catMeta");
+
+  const promptEl = $("#prompt");
+  const stateMetaEl = $("#stateMeta");
+  const catTitleEl = $("#catTitle");
+  const catStrategyEl = $("#catStrategy");
+  const whyEl = $("#why");
+  const platsEl = $("#plats");
+
+  const toastEl = $("#toast");
+
+  const btnOverseas = $("#btnOverseas");
+  const btnDomestic = $("#btnDomestic");
+  const regionMeta = $("#regionMeta");
+
+  let selectedCatId = null;
+  let lastAutoTemplate = "";
+  let region = "overseas"; // default overseas
+
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(()=>toastEl.classList.remove("show"), 1100);
+  }
+
+  // Clipboard copy keeps REAL newlines
+  async function copyText(text){
+    const s = (text ?? "");
+    if (navigator.clipboard && window.isSecureContext) {
+      try{
+        await navigator.clipboard.writeText(s);
+        return true;
+      }catch(e){}
+    }
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = s;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function getPlatformNote(pid, catId){
+    const p = PLATFORMS[pid];
+    if(!p) return "";
+    return (p.categoryNotes && p.categoryNotes[catId]) ? p.categoryNotes[catId] : p.baseNotes;
+  }
+
+  function renderCategories(){
+    catListEl.innerHTML = CATEGORIES.map(c => `
+      <label class="cat" for="cat_${c.id}">
+        <input type="radio" name="cat" id="cat_${c.id}" value="${c.id}" />
+        <div>
+          <p class="t">${c.title}</p>
+          <p class="d">${c.desc}</p>
+        </div>
+      </label>
+    `).join("");
+
+    catListEl.querySelectorAll('input[name="cat"]').forEach(r=>{
+      r.addEventListener("change", ()=>{
+        selectedCatId = r.value;
+        catMetaEl.textContent = "已选择";
+        onCategorySelected();
+        document.getElementById("step3").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    });
+  }
+
+  function renderPlatforms(cat){
+    platsEl.innerHTML = "";
+    const ids = (cat.recommends && cat.recommends[region]) ? cat.recommends[region] : [];
+
+    if(!ids.length){
+      platsEl.innerHTML = `<div class="small">当前区域没有配置推荐平台，请在配置里补充 recommends.${region}。</div>`;
+      return;
+    }
+
+    ids.forEach(pid=>{
+      const p = PLATFORMS[pid];
+      if(!p) return;
+
+      const note = getPlatformNote(pid, cat.id);
+      const companyLine = p.company ? `${p.company}` : "—";
+      const resources = Array.isArray(p.companyResources) && p.companyResources.length
+        ? p.companyResources.join(" / ")
+        : "—";
+
+      const div = document.createElement("div");
+      div.className = "plat";
+      div.innerHTML = `
+        <div class="top">
+          <div>
+            <div class="name">${p.name}</div>
+            <div class="meta">${note}</div>
+          </div>
+          <span class="tag">推荐</span>
+        </div>
+
+        <div class="res">
+          <div><span class="mono">公司：</span>${companyLine}</div>
+          <div><span class="mono">内容资源：</span>${resources}</div>
+        </div>
+
+        <div class="actions">
+          <button class="secondary" data-act="raw">复制原问题并跳转</button>
+          <button data-act="tpl">复制模板并跳转</button>
+          <a class="btnlink" href="${p.url}" target="_blank" rel="noopener">仅打开 ${p.name}</a>
+        </div>
+      `;
+
+      div.querySelector('[data-act="raw"]').addEventListener("click", async ()=>{
+        const raw = questionEl.value.trim();
+        if(!raw){ toast("原问题为空"); return; }
+        const ok = await copyText(raw);
+        if(ok){
+          toast("已复制原问题并跳转");
+          window.open(p.url, "_blank", "noopener");
+        }else{
+          toast("复制失败（浏览器限制）");
+        }
+      });
+
+      div.querySelector('[data-act="tpl"]').addEventListener("click", async ()=>{
+        const tpl = promptEl.value;
+        if(!tpl.trim()){ toast("模板为空"); return; }
+        const ok = await copyText(tpl);
+        if(ok){
+          toast("已复制模板并跳转");
+          window.open(p.url, "_blank", "noopener");
+        }else{
+          toast("复制失败（浏览器限制）");
+        }
+      });
+
+      platsEl.appendChild(div);
+    });
+  }
+
+  function generateTemplate(cat, q){
+    lastAutoTemplate = cat.template(q);
+    promptEl.value = lastAutoTemplate;
+    stateMetaEl.textContent = "模板已生成";
+  }
+
+  function onCategorySelected(){
+    const q = questionEl.value.trim();
+    const cat = CATEGORIES.find(x=>x.id === selectedCatId);
+    if(!cat) return;
+
+    catTitleEl.textContent = cat.title;
+    catStrategyEl.textContent = cat.strategy;
+    whyEl.textContent = cat.why;
+
+    generateTemplate(cat, q);
+    renderPlatforms(cat);
+  }
+
+  function setRegion(next){
+    region = next;
+    btnOverseas.classList.toggle("active", region === "overseas");
+    btnDomestic.classList.toggle("active", region === "domestic");
+    regionMeta.textContent = `当前：${region === "overseas" ? "国外模型" : "国内模型"}`;
+
+    // refresh platform list to match region + category
+    if(selectedCatId){
+      const cat = CATEGORIES.find(x=>x.id === selectedCatId);
+      if(cat) renderPlatforms(cat);
+    }else{
+      platsEl.innerHTML = "";
+    }
+  }
+
+  // Step1: only meta updates
+  questionEl.addEventListener("input", ()=>{
+    qMetaEl.textContent = `${questionEl.value.length} 字符`;
+    // 若已选类，随着问题变化自动重生成模板 + 刷新平台说明（notes会随分类保持一致，这里只更新模板）
+    if(selectedCatId){
+      const cat = CATEGORIES.find(x=>x.id === selectedCatId);
+      if(cat) generateTemplate(cat, questionEl.value.trim());
+    }
+  });
+
+  // region toggle
+  btnOverseas.addEventListener("click", ()=>setRegion("overseas"));
+  btnDomestic.addEventListener("click", ()=>setRegion("domestic"));
+
+  // Init
+  renderCategories();
+  setRegion("overseas");
+</script>
+</body>
+</html>
