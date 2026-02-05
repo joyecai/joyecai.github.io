@@ -5,7 +5,7 @@ header-img: img/post-bg-desk.jpg
 email: caijiayue2@gmail.com
 description: "Know more, Do more, Be more."
 keyword: "Joye Cai Joye Cai's Blog, Jiayue Cai, Jiayue Cai's Blog, 蔡嘉跃, 蔡嘉跃的博客, joyecai"
-url: "http://joyecai.github.io"          # your host, for absolute URL
+url: "https://joyecai.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/joyecai/joyecai.github.io.git" # you code repository
 
