@@ -59,8 +59,8 @@ kramdown:
 # Gitalk
 gitalk:
   enable: true    #是否开启Gitalk评论
-  clientID: Ov23li1yZ50In0gCR5WO   #生成的clientID
-  clientSecret: d652998fcaaaa4db806f0dc9f1817ce96e45f69e  #同上
+  clientID: Ov23liaytDHVwKXw29Du   #生成的clientID
+  clientSecret: d6e5909dacca19b6e9ca3ee73acaf98b91c78337  #同上
   repo: joyecai.github.io    #仓库名称
   owner: joyecai    #github用户名
   admin: joyecai
@@ -75,7 +75,7 @@ gitalk:
 ba_track_id: ed5bf7ec2e53cbb5af8de74bf5ff1747
 
 # Google Analytics
-ga_track_id: 'G-E7640934ME'            # Format: UA-xxxxxx-xx
+ga_track_id: 'G-L992TB5KW8'            # Format: UA-xxxxxx-xx
 ga_domain: auto           # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
@@ -98,7 +98,7 @@ service-worker: true
 friends: [
     {
         title: "Previous github Page",
-        href: "https://github.com/ColaDrill"
+        href: "https://github.com/joyecai"
     },
     {
         title: "Google Analytics",
