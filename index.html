@@ -2,6 +2,15 @@
 layout: page
 description: "Know more, Do more, Be more"
 ---
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E7640934ME"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E7640934ME');
+</script>
 
 {% for post in paginator.posts %}
 <div class="post-preview">
